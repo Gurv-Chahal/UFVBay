@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/* The purpose of the DTO class is to essentially encapsulate the entities because 
+/* 
+The purpose of the DTO class is to essentially encapsulate the entities because 
 we dont want to directly interact with the database, it is better to keep it hidden.
 The DTO class will only give the information we need from database, which is good.
 */

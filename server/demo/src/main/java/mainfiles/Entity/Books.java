@@ -2,6 +2,13 @@ package mainfiles.entity;
 
 import jakarta.persistence.*;
 
+
+/*
+This is an entity which creates a table called book in the database,
+the variables are created into columns which is going to be information we want to store.
+This class specifically holds the information about all the books in the database. 
+*/
+
 @Entity
 @Table(name = "Book")
 public class Books {
