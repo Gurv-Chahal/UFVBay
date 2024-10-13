@@ -1,4 +1,4 @@
-package mainfiles.Entity;
+package mainfiles.entity;
 
 import jakarta.persistence.*;
 
