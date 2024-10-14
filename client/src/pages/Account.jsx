@@ -1,11 +1,14 @@
-import react from 'react';
-
+import react from "react";
+import AccountNavBar from "../components/AccountNavBar.jsx";
+import AccountSideBar from "../components/AccountSideBar.jsx";
 
 const Account = () => {
-
-    return(
-        <h1>Hello</h1>
-    )
-}
+  return (
+    <div>
+      <AccountNavBar />
+      <AccountSideBar />
+    </div>
+  );
+};
 
 export default Account;

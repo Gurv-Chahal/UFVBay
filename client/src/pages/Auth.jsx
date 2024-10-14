@@ -93,7 +93,7 @@ const Auth = () => {
               style={{
                 width: "200px",
                 backgroundColor: "#3AF669",
-                border: "2px solid #fff", // Added solid style to the border
+                border: "2px solid #fff",
                 color: "#fff",
               }}
             >

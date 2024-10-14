@@ -1,13 +1,14 @@
 import React from "react";
 import "../public/HomeSideBar.css";
+import "../public/navbar.css";
 
 const HomeSideBar = () => {
   return (
     <div
-      className="h-100 z-0 "
+      className="h-100 z-0 col-2 navbar-fixed "
       style={{
         backgroundColor: "#f8f9fa",
-        width: "20%",
+
         position: "fixed",
         boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
       }}
