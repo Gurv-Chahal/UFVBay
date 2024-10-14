@@ -4,14 +4,14 @@ import { Link, useLocation } from "react-router-dom";
 import "../public/navbar.css";
 
 //Navbar component
-const Navbar = () => {
+const AccountNavBar = () => {
   return (
     <nav
       //Sets nav bar colour and makes it appear above homeside navbar
-      className="navbar navbar-light bg-light z-1 fixed-top"
+      className="navbar navbar-light bg-light z-1"
       style={{ boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)" }}
     >
-      <div className="container-fluid ">
+      <div className="container-fluid">
         <a className="navbar-brand d-flex" href="#">
           <img
             src={ufvbaylogo}
@@ -21,18 +21,6 @@ const Navbar = () => {
           />
           <h2 className="py-2">UFVBay</h2>
         </a>
-
-        <form className="d-flex order-1 order-md-0 search-bar">
-          <input
-            className="form-control "
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-          />
-          <button className="btn btn-outline-success" type="submit">
-            <i className="bi bi-search"></i>
-          </button>
-        </form>
 
         <div className="d-flex order-0 order-md-1">
           <button //Message Button
@@ -60,4 +48,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default AccountNavBar;
