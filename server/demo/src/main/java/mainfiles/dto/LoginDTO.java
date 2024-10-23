@@ -19,7 +19,7 @@ The DTO class will only give the information we need from database, which is goo
 public class LoginDTO {
 
   // information we want sent back and forth from the database so that the user can login
-  private String username;
+  private String usernameOrEmail;
   private String password;
 
 }
