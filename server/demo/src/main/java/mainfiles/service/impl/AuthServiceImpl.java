@@ -6,7 +6,7 @@ import mainfiles.entity.User;
 import lombok.AllArgsConstructor;
 import mainfiles.dto.*;
 import mainfiles.repository.*;
-
+import mainfiles.service.AuthService;
 
 /*
 The purpose of the service class is to write the actual implementation of the code/business logic.
@@ -16,7 +16,7 @@ Meaning the implementation of login/registration.
 
 @Service
 @AllArgsConstructor
-public class AuthServiceImpl {
+public class AuthServiceImpl implements AuthService {
 
   // has functionality such as checking if username/email already exists in database
   // UserRepository is a class which extends JPARepository built in method
