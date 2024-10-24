@@ -1,12 +1,13 @@
-package mainfiles.service.impl;
+package mainfiles.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import mainfiles.entity.User;
 
 import lombok.AllArgsConstructor;
 import mainfiles.dto.*;
 import mainfiles.repository.*;
-import mainfiles.service.AuthService;
+
 
 /*
 The purpose of the service class is to write the actual implementation of the code/business logic.
@@ -24,6 +25,7 @@ public class AuthServiceImpl implements AuthService {
   private UserRepository userRepository;
 
   // have reference to an object of the class RegisterDTO
+  @Override
   public String register(RegisterDTO registerDTO) {
     
     // 1. Check if username already exists in database by using UserRepository
@@ -71,6 +73,7 @@ public class AuthServiceImpl implements AuthService {
 
 
   // have reference to an object of the class LoginDTO
+  @Override
   public String login(LoginDTO loginDTO) {
     
     loginDTO.getUsernameOrEmail();

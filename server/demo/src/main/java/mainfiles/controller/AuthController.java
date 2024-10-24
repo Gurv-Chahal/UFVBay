@@ -1,8 +1,12 @@
 package mainfiles.controller;
 
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import lombok.AllArgsConstructor;
 
 
 import mainfiles.service.AuthService;
@@ -18,6 +22,8 @@ this is why its marked @RestController
 // combines @controller and @responsebody so you dont have to use @responsebody on every
 // method. It also handles to http requests so we can do things like @GetMapping
 @RestController
+@CrossOrigin("*")
+@AllArgsConstructor
 // its a base api you have to access first for example UFVBay.com/auth/login
 @RequestMapping("/auth")
 public class AuthController {
@@ -25,6 +31,13 @@ public class AuthController {
   // reference variable to interface, can reference an object of any class that implements 
   // AuthService interface
   private AuthService authservice;
+
+  
+
+  @GetMapping("/test")
+  public ResponseEntity<String> test() {
+    return new ResponseEntity<>("api works", HttpStatus.CREATED);
+  }
 
 
   // Build Register RESTAPI

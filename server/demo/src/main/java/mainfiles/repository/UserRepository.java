@@ -1,7 +1,9 @@
 package mainfiles.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import mainfiles.entity.*;
+import org.springframework.stereotype.Repository;
 
 /* 
 This is an important class because it gives us some basic built in methods that we need
