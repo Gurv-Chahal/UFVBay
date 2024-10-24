@@ -19,8 +19,8 @@ this is why its marked @RestController
 */
 
 
-// combines @controller and @responsebody so you dont have to use @responsebody on every
-// method. It also handles to http requests so we can do things like @GetMapping
+/* combines @controller and @responsebody so you dont have to use @responsebody on every
+method. It also handles to http requests so we can do things like @GetMapping */
 @RestController
 @CrossOrigin("*")
 @AllArgsConstructor
@@ -28,31 +28,21 @@ this is why its marked @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-  // reference variable to interface, can reference an object of any class that implements 
-  // AuthService interface
+  // reference variable to interface, can reference an object of any class that implements AuthService interface
   private AuthService authservice;
 
-  
-
-  @GetMapping("/test")
-  public ResponseEntity<String> test() {
-    return new ResponseEntity<>("api works", HttpStatus.CREATED);
-  }
-
-
-  // Build Register RESTAPI
-
-  // method is of type ResponseEntity which is a class provided by spring that represents
-  // an http response. it allows us to customize http response. In this case we are returning
-  // a string and a http response.
-  // @PostMapping - used to HTTP POST, which is sending data to a server
+  /* 1. Build Register RESTAPI
+   method is of type ResponseEntity which is a class provided by spring that represents
+   an http response. it allows us to customize http response. In this case we are returning
+   a string and a http response.
+   @PostMapping - used to HTTP POST, which is sending data to a server
+   */
 
   @PostMapping("/register")
   public ResponseEntity<String> register(@RequestBody RegisterDTO registerDTO) {
     
-    // calls the register method from authservice interface which is implemented in authserviceimpl
-    // 'String response' holds the message returned by register() method
-    // which is in this case "User registered sucessfully"
+    /* calls the register method from authservice interface which is implemented in authserviceimpl 'String
+    response' holds the message returned by register() method which is in this case "User registered sucessfully" */
     String response = authservice.register(registerDTO);
 
     // return string from register method and the httpstatus CREATED
@@ -62,7 +52,7 @@ public class AuthController {
 
 
 
-  // Build Login RESTAPI
+  // 2. Build Login RESTAPI
   @PostMapping("/login")
   // @RequestBody binds incoming data to java object (typically in JSON)
   public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {

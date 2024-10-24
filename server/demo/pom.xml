@@ -7,8 +7,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.2</version> <!-- Use a valid version -->
-		<relativePath/> <!-- lookup parent from repository -->
+		<version>3.1.2</version>
+		<relativePath/>
 	</parent>
 
 	<groupId>mainfiles</groupId>
@@ -23,33 +23,34 @@
 
 	<dependencies>
 
-<!-- saves time creating constructors and getters/setters -->
-    <dependency>
-		  <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-		<version>1.18.30</version> <!-- Added -->
-	</dependency>
+		<!-- saves time creating constructors and getters/setters -->
+    	<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.30</version> <!-- Added -->
+		</dependency>
 
 
-<!-- to allow code to work with database -->
+		<!-- to allow code to work with database -->
 		<dependency>
-    	<groupId>org.springframework.boot</groupId>
-    	<artifactId>spring-boot-starter-data-jpa</artifactId>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<version>3.3.3</version>
 		</dependency>
 
-<!-- to allow database connectivity -->
+		<!-- to allow database connectivity -->
 		<dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-jdbc</artifactId>
-    </dependency>
+      		<groupId>org.springframework.boot</groupId>
+      		<artifactId>spring-boot-starter-jdbc</artifactId>
+    	</dependency>
 
-<!-- to run mysql -->
-    <dependency>
-      <groupId>com.mysql</groupId>
-      <artifactId>mysql-connector-j</artifactId>
-      <scope>runtime</scope>
-    </dependency>
+		<!-- to run mysql -->
+    	<dependency>
+      		<groupId>com.mysql</groupId>
+      		<artifactId>mysql-connector-j</artifactId>
+			<version>8.2.0</version>
+			<scope>runtime</scope>
+    	</dependency>
 
 		<!-- Spring Boot Web Starter -->
 		<dependency>
@@ -63,6 +64,20 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Spring Security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- Useful for Spring Security Testing -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 
 	</dependencies>
 
