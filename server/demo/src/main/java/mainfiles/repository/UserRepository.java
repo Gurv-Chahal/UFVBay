@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import mainfiles.entity.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /* 
 This is an important class because it gives us some basic built in methods that we need
 such as findbyId, deletebyId, and other methods that check if something already exists in database.
@@ -20,5 +22,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   // exists by email method
   public boolean existsByEmail(String email);
+
+  // Spring Data JPA automatically creates a query to find a User entity where either the username or email matches the values.
+  public Optional<User> findByUsernameOrEmail(String username, String email);
 
 }

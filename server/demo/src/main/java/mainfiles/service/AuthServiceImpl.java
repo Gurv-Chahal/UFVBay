@@ -17,7 +17,7 @@ import mainfiles.repository.*;
 /*
 The purpose of the service class is to write the actual implementation of the code/business logic.
 This class is called AuthServiceImpl because we will writing the implementation of the authentication logic,
-Meaning the implementation of login/registration. 
+Meaning the implementation of login/registration.
 */
 
 @Service

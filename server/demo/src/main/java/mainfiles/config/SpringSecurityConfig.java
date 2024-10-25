@@ -2,6 +2,7 @@ package mainfiles.config;
 
 
 import lombok.AllArgsConstructor;
+import mainfiles.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,8 +16,14 @@ import org.springframework.security.web.SecurityFilterChain;
 
 // Need @Configuration annotation to indicate to spring that the class provides configuration for security settings
 @Configuration
-@AllArgsConstructor
 public class SpringSecurityConfig {
+
+    private final CustomUserDetailsService userDetailsService;
+
+    // contructor
+    public SpringSecurityConfig(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
 
     // @Bean tells spring to manage the method in spring container
@@ -43,14 +50,19 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests((authorize) -> {
 
                     // permit all that are registering. They do not need authorization
-                    authorize.requestMatchers("/auth/register").permitAll();
+                    authorize.requestMatchers("/auth/register", "/auth/login").permitAll();
+
 
                     // require authentication for any user trying to access endpoints
                     authorize.anyRequest().authenticated();
+                })
 
-                    // enable HTTP Basic authentication, this prompts the user for username/password
-                    // in browser pop up
-                }).httpBasic(Customizer.withDefaults());
+                // this gives the user information like username and email which was obtained in the
+                // CustomUserDetailsService class so that it can be used for login authentication
+                .userDetailsService(userDetailsService)
+
+                // enable http basic authentication which prompts user for username/password pop up
+                .httpBasic(Customizer.withDefaults());
 
         // build and return configured SecurityFilterChain
         return http.build();
