@@ -1,6 +1,6 @@
-package mainfiles.service;
+package mainfiles.service.Implementation;
 
-import lombok.RequiredArgsConstructor;
+import mainfiles.service.AuthService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

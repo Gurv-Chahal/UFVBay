@@ -1,8 +1,7 @@
-package mainfiles.service;
+package mainfiles.service.Implementation;
 
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import mainfiles.entity.User;
 import mainfiles.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,8 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /*

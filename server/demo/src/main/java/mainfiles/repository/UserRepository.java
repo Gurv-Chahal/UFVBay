@@ -15,6 +15,7 @@ it does this by extending the spring jparepository by importing it.
 
 
 // in the '<>' must provide the entity class and the type of the primary key
+@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
   // exists by username method
