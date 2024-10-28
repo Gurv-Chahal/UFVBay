@@ -1,16 +1,15 @@
-import react from "react";
 import "../public/Auth.css";
 import ufvbaylogo from "../images/ufvbaylogo.png";
 import { Link, useLocation } from "react-router-dom";
 
-const Auth = () => {
+const Signup = () => {
   return (
     <div className="w-full h-screen d-flex align-items-center justify-content-center">
       <div className="row w-100 vh-100">
-        {/*Log In half of auth page */}
+        {/*Create account portion of the page*/}
         <div className="col-6 border d-flex flex-column justify-content-center">
           <h1 className="text-center" style={{ fontSize: "4rem" }}>
-            Sign In
+            Create an Account
           </h1>
           <div className="my-5">
             <div className="d-flex justify-content-center">
@@ -45,8 +44,24 @@ const Auth = () => {
                 }}
               />
             </div>
+            <div className="mb-3 d-flex justify-content-center">
+              <input
+                type="password"
+                className="form-control py-3"
+                id="password"
+                placeholder="Re-enter your password"
+                style={{
+                  width: "600px",
+                  borderTop: "none",
+                  borderLeft: "none",
+                  borderRight: "none",
+                  borderBottom: "2px solid #000",
+                  backgroundColor: "#f0f0f0",
+                }}
+              />
+            </div>
           </div>
-          {/*Sign Up portion */}
+          {/*Right half of the webpage for logging in if you have an account */}
           <div className="d-flex justify-content-center">
             <button
               className="btn btn-light-green p-3 rounded-pill"
@@ -58,7 +73,7 @@ const Auth = () => {
                 color: "#fff",
               }}
             >
-              Log In
+              Sign Up
             </button>
           </div>
         </div>
@@ -86,13 +101,14 @@ const Auth = () => {
                   width: "800px",
                 }}
               >
-                Make an account and start shopping for textbooks for cheap!
+                Already have an account? Sign in and checkout the newest
+                listings while you were gone!
               </h3>
             </div>
           </div>
-          {/*Button redirects to signup page*/}
-          <Link to="/signup" style={{ textDecoration: "none" }}>
-            <div className="d-flex justify-content-center">
+          <div className="d-flex justify-content-center">
+            {/*Button redirects to log in npage*/}
+            <Link to="/login">
               <button
                 className="btn btn-light-green p-3 rounded-pill"
                 style={{
@@ -102,14 +118,14 @@ const Auth = () => {
                   color: "#fff",
                 }}
               >
-                Create Account
+                Log In
               </button>
-            </div>
-          </Link>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Auth;
+export default Signup;
