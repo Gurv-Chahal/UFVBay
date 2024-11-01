@@ -1,9 +1,32 @@
-import react from "react";
+import React, {useState} from "react";
 import "../public/Auth.css";
 import ufvbaylogo from "../images/ufvbaylogo.png";
-import { Link, useLocation } from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
+import {loginAPICall} from "../services/AuthService.js";
+import axios from "axios";
+
 
 const Auth = () => {
+
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigator = useNavigate();
+
+    async function handlelogin(e) {
+
+        await loginAPICall(username, password).then(() => {
+
+            navigator('/');
+
+
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+
+
+
   return (
     <div className="w-full h-screen d-flex align-items-center justify-content-center">
       <div className="row w-100 vh-100">
@@ -19,6 +42,8 @@ const Auth = () => {
                 className="form-control my-4 py-3 custom-placeholder"
                 id="email"
                 placeholder="Enter your email"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 style={{
                   width: "600px",
                   borderTop: "none",
@@ -35,6 +60,8 @@ const Auth = () => {
                 className="form-control py-3"
                 id="password"
                 placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 style={{
                   width: "600px",
                   borderTop: "none",
@@ -50,6 +77,7 @@ const Auth = () => {
           <div className="d-flex justify-content-center">
             <button
               className="btn btn-light-green p-3 rounded-pill"
+              onClick={handlelogin}
               style={{
                 width: "200px",
                 backgroundColor: "#34c759",

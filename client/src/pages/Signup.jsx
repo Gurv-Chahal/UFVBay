@@ -1,8 +1,8 @@
 import "../public/Auth.css";
 import ufvbaylogo from "../images/ufvbaylogo.png";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "Axios";
 import { useState } from "react";
+import {registerAPICall} from "../services/AuthService.js";
 
 const Signup = () => {
   //State
@@ -26,15 +26,14 @@ const Signup = () => {
         email: email,
         password: savedPassword,
       };
-      axios
-        .post("http://localhost:8080/auth/register", userData)
-        .then((response) => {
-          console.log(response.status, response.data.token);
-          navigate("/login");
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+        registerAPICall(userData)
+            .then((response) => {
+                console.log(response.status, response.data.token);
+                navigate("/login");
+            })
+            .catch((error) => {
+                console.error("Registration failed:", error);
+            });
     } else {
       alert("Passwords do not match. Please re-enter");
     }
