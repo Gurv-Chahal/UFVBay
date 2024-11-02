@@ -53,6 +53,8 @@ export const isUserLoggedIn = () => {
     } else {
         return true;
     }
+
+
 }
 
 
@@ -61,4 +63,13 @@ export const getLoggedInUser = () => {
     const username = sessionStorage.getItem('authenticatedUser');
     return username;
 
+}
+
+
+// logout - clear storage and reload page
+export const logout = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    // refreshes the page when logout is clicked and doesnt route back to login page
+    window.location.reload(false);
 }

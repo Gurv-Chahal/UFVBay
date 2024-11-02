@@ -2,7 +2,7 @@ import React from "react";
 import "../public/HomeSideBar.css";
 import "../public/navbar.css";
 import { Link, useLocation } from "react-router-dom";
-import {isUserLoggedIn} from "../services/AuthService.js";
+import {isUserLoggedIn, logout} from "../services/AuthService.js";
 
 const HomeSideBar = () => {
 
@@ -11,6 +11,10 @@ const HomeSideBar = () => {
 
     // check if user is logged in
     const isAuth = isUserLoggedIn();
+
+    function handleLogout() {
+        logout();
+    }
 
 
 
@@ -61,6 +65,9 @@ const HomeSideBar = () => {
           Notifications
         </button>
 
+          {/*if isAuth is false then show login button, if its true then show log out button.
+           also using onClick if user clicks logout then logout() method will handle it*/}
+
           {
               !isAuth &&
               <Link to="/login" style={{textDecoration: "none"}}>
@@ -73,7 +80,7 @@ const HomeSideBar = () => {
 
           {
               isAuth &&
-              <Link to="/login" style={{textDecoration: "none"}}>
+              <Link to="/login" style={{textDecoration: "none"}} onClick={handleLogout}>
                   <button className="btn my-3 py-3 d-flex align-items-center text-start gradient-button">
                       <i className="bi bi-box-arrow-in-right px-3" style={{fontSize: "30px"}}/>
                       Log Out

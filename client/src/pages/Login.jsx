@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import "../public/Auth.css";
 import ufvbaylogo from "../images/ufvbaylogo.png";
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import {loginAPICall, storeToken} from "../services/AuthService.js";
+import {loginAPICall, saveLoggedInUser, storeToken} from "../services/AuthService.js";
 import axios from "axios";
 
 
@@ -13,6 +13,9 @@ const Auth = () => {
     const [password, setPassword] = useState('');
     const navigator = useNavigate();
 
+
+    // made it async so that it waits for login api call to finish to make sure everything
+    // runs in correct order
     async function handlelogin(e) {
 
         await loginAPICall(username, password).then((response) => {
@@ -23,6 +26,7 @@ const Auth = () => {
             const token = 'Basic' + window.btoa(username + ':' + password);
             storeToken(token);
 
+            saveLoggedInUser(username)
 
             navigator('/');
 
