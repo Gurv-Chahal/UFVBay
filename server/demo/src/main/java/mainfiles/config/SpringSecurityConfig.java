@@ -4,6 +4,7 @@ package mainfiles.config;
 import mainfiles.service.Implementation.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -49,6 +50,9 @@ public class SpringSecurityConfig {
 
                     // permit all that are registering. They do not need authorization
                     authorize.requestMatchers("/auth/register", "/auth/login").permitAll();
+
+                    // permit all OPTIONS requests, this essentially stops CORS errors.
+                    authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 
 
                     // require authentication for any user trying to access endpoints
