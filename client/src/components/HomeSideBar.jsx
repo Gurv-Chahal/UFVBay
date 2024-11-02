@@ -2,8 +2,18 @@ import React from "react";
 import "../public/HomeSideBar.css";
 import "../public/navbar.css";
 import { Link, useLocation } from "react-router-dom";
+import {isUserLoggedIn} from "../services/AuthService.js";
 
 const HomeSideBar = () => {
+
+    // ---------
+    // functionality for log in button on sidebar
+
+    // check if user is logged in
+    const isAuth = isUserLoggedIn();
+
+
+
   return (
     <div
       className="h-100 z-0 col-2 navbar-fixed "
@@ -50,6 +60,30 @@ const HomeSideBar = () => {
           <i className="bi bi-bell px-3" style={{ fontSize: "30px" }} />
           Notifications
         </button>
+
+          {
+              !isAuth &&
+              <Link to="/login" style={{textDecoration: "none"}}>
+                  <button className="btn my-3 py-3 d-flex align-items-center text-start gradient-button">
+                      <i className="bi bi-box-arrow-in-right px-3" style={{fontSize: "30px"}}/>
+                      Log In
+                  </button>
+              </Link>
+          }
+
+          {
+              isAuth &&
+              <Link to="/login" style={{textDecoration: "none"}}>
+                  <button className="btn my-3 py-3 d-flex align-items-center text-start gradient-button">
+                      <i className="bi bi-box-arrow-in-right px-3" style={{fontSize: "30px"}}/>
+                      Log Out
+                  </button>
+              </Link>
+          }
+
+
+
+
       </div>
     </div>
   );
