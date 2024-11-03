@@ -1,6 +1,8 @@
 package mainfiles.config;
 
 
+import mainfiles.security.JwtAEP;
+import mainfiles.security.JwtAuthFilter;
 import mainfiles.service.Implementation.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 // Need @Configuration annotation to indicate to spring that the class provides configuration for security settings
 @Configuration
@@ -19,9 +22,16 @@ public class SpringSecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
 
+    // JWT fields
+    private JwtAEP authEntryPoint;
+    private JwtAuthFilter authFilter;
+
     // contructor
-    public SpringSecurityConfig(CustomUserDetailsService userDetailsService) {
+    public SpringSecurityConfig(CustomUserDetailsService userDetailsService,
+                                JwtAEP authEntryPoint, JwtAuthFilter authFilter) {
         this.userDetailsService = userDetailsService;
+        this.authEntryPoint = authEntryPoint;
+        this.authFilter = authFilter;
     }
 
 
@@ -41,7 +51,7 @@ public class SpringSecurityConfig {
     // http requests. HttpSecurity allows customization of security behaviour of Http requests.
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        // CSRF is disabled so we dont get stupid errors, although might enable it later
+
         http.csrf().disable()
 
                 // this method configures authorization for HTTP requests
@@ -66,7 +76,11 @@ public class SpringSecurityConfig {
                 // enable http basic authentication which prompts user for username/password pop up
                 .httpBasic(Customizer.withDefaults());
 
-        // build and return configured SecurityFilterChain
+        http.exceptionHandling((exception) -> exception
+                .authenticationEntryPoint(authEntryPoint));
+
+        http.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 

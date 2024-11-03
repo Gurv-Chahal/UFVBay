@@ -13,7 +13,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 // by entityscan, componentscan, enablejparepositories. As well as other issues
 // almost all issues have been fixed by using component scan
 @EntityScan("mainfiles.entity")
-@ComponentScan(basePackages = {"mainfiles.controller", "mainfiles.service", "mainfiles.config"})
+@ComponentScan(basePackages = {"mainfiles.controller", "mainfiles.service", "mainfiles.config",
+								"mainfiles.security", "mainfiles.repository"})
 @EnableJpaRepositories(basePackages = {"mainfiles.repository"})
 
 public class boot {

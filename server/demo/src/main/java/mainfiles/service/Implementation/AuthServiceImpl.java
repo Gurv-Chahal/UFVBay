@@ -1,5 +1,7 @@
 package mainfiles.service.Implementation;
 
+import lombok.RequiredArgsConstructor;
+import mainfiles.security.JwtToken;
 import mainfiles.service.AuthService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,19 +23,22 @@ Meaning the implementation of login/registration.
 */
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
   /* has functionality such as checking if username/email already exists in database
    UserRepository is a class which extends JPARepository built in method.
    Here we have a reference to an object of the class UserRepository */
-  private UserRepository userRepository;
+  private final UserRepository userRepository;
 
   // gives methods to encrypt passwords
-  private PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
   // gives methods to authenticate login
-  private AuthenticationManager authenticationManager;
+  private final AuthenticationManager authenticationManager;
+
+  //JWT field
+  private final JwtToken jwtToken;
 
 
 
@@ -98,9 +103,12 @@ public class AuthServiceImpl implements AuthService {
     /* SecurityContextHolder stores security details like the authenticated user.
     getContext() retrieves the context, and setAuthentication(authentication) saves the user's authentication info. */
     SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    // JWT code
+    String token = jwtToken.generateToken(authentication);
     
 
-    return "User logged in successfully";
+    return token;
   }
   
 }

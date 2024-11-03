@@ -15,16 +15,15 @@ import mainfiles.dto.*;
 
 /* 
 In this class is where we implement the register and login REST api,
-this is why its marked @RestController
+this is why its marked @RestController. restcontroller handles http requests
+allowing rest apis to function
 */
 
 
-/* combines @controller and @responsebody so you dont have to use @responsebody on every
-method. It also handles to http requests so we can do things like @GetMapping */
+
 @RestController
 @CrossOrigin("*")
 @AllArgsConstructor
-// its a base api you have to access first for example UFVBay.com/auth/login
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -55,11 +54,15 @@ public class AuthController {
   // 2. Build Login RESTAPI
   @PostMapping("/login")
   // @RequestBody binds incoming data to java object (typically in JSON)
-  public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
+  public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDTO loginDTO) {
 
-      // same as above but for login
-      String response = authservice.login(loginDTO);
-      return new ResponseEntity<>(response, HttpStatus.OK);
+      String token = authservice.login(loginDTO);
+
+      // jwt code
+      JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+      jwtAuthResponse.setAccessToken(token);
+
+      return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
       
   }
 
