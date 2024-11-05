@@ -2,7 +2,7 @@ package mainfiles.service.Implementation;
 
 
 import lombok.AllArgsConstructor;
-import mainfiles.entity.User;
+import mainfiles.Entity.User;
 import mainfiles.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

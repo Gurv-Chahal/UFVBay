@@ -3,7 +3,7 @@ package mainfiles.demo;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import mainfiles.main.boot;
+import mainfiles.Main.boot;
 
 @SpringBootTest(classes = boot.class)
 class DemoApplicationTests {

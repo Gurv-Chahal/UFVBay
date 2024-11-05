@@ -1,42 +1,39 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import "../public/Auth.css";
 import ufvbaylogo from "../images/ufvbaylogo.png";
-import {Link, useLocation, useNavigate} from "react-router-dom";
-import {loginAPICall, saveLoggedInUser, storeToken} from "../services/AuthService.js";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  loginAPICall,
+  saveLoggedInUser,
+  storeToken,
+} from "../services/AuthService.js";
 import axios from "axios";
 
-
 const Auth = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const navigator = useNavigate();
 
+  // made it async so that it waits for login api call to finish to make sure everything
+  // runs in correct order
+  async function handlelogin() {
+    await loginAPICall(username, password)
+      .then((response) => {
+        console.log(response.data);
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const navigator = useNavigate();
+        // basic authentication token used to authenticate users using username password
+        // even if the browser gets closed and reopened. In this case its just storing the token
+        const token = "Basic" + window.btoa(username + ":" + password);
+        storeToken(token);
 
+        saveLoggedInUser(username);
 
-    // made it async so that it waits for login api call to finish to make sure everything
-    // runs in correct order
-    async function handlelogin(e) {
-
-        await loginAPICall(username, password).then((response) => {
-            console.log(response.data)
-
-            // basic authentication token used to authenticate users using username password
-            // even if the browser gets closed and reopened. In this case its just storing the token
-            const token = 'Basic' + window.btoa(username + ':' + password);
-            storeToken(token);
-
-            saveLoggedInUser(username)
-
-            navigator('/');
-
-
-        }).catch(error => {
-            console.log(error);
-        })
-    }
-
-
+        navigator("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   return (
     <div className="w-full h-screen d-flex align-items-center justify-content-center">

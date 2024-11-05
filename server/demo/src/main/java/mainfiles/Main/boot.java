@@ -1,4 +1,4 @@
-package mainfiles.main;
+package mainfiles.Main;
 
 import mainfiles.controller.AuthController;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 // issues of error 404, and issues of error 500 nullpointerexception were fixed
 // by entityscan, componentscan, enablejparepositories. As well as other issues
 // almost all issues have been fixed by using component scan
-@EntityScan("mainfiles.entity")
+@EntityScan("mainfiles.Entity")
 @ComponentScan(basePackages = {"mainfiles.controller", "mainfiles.service", "mainfiles.config",
 								"mainfiles.security", "mainfiles.repository"})
 @EnableJpaRepositories(basePackages = {"mainfiles.repository"})
