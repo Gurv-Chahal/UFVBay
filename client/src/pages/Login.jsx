@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../public/Auth.css";
 import ufvbaylogo from "../images/ufvbaylogo.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";

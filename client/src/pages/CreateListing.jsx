@@ -1,33 +1,46 @@
-import { Link, useLocation } from "react-router-dom";
 import AccountNavBar from "../components/AccountNavBar.jsx";
 import AccountSideBar from "../components/AccountSideBar.jsx";
-import React from "react";
+import { useState } from "react";
 import Dropzone from "react-dropzone";
 import Map from "../components/Map.jsx";
 import "../public/CreateListing.css";
 
 const CreateListing = () => {
+  const [preview, setPreview] = useState([]);
+  const [bookTitle, setBookTitle] = useState("");
+  const [price, setPrice] = useState("");
+  const [subject, setSubject] = useState(null);
+  const [description, setDescription] = useState("");
+  const [images, setImages] = useState([]);
+  const [coordinates, setCoordinates] = useState();
+
+  const handleDrop = (acceptedFiles) => {
+    const newPreviews = acceptedFiles.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+
+    setImages((prev) => [...prev, ...acceptedFiles]);
+    setPreview((prev) => [...prev, ...newPreviews]);
+  };
+
   return (
     <div
-      className="container-fluid p-0"
-      style={{ backgroundColor: "#f0f0f0", height: "100vh" }}
+      className="container-fluid p-0 min-vh-100 "
+      style={{ backgroundColor: "#f0f0f0" }}
     >
-      <div className="row m-0">
-        <div className="col-12 p-0">
-          <AccountNavBar /> {/* Navbar spans the full width */}
-        </div>
-      </div>
-      <div className="row m-0 ">
+      <AccountNavBar /> {/* Navbar spans the full width */}
+      <div className="d-flex ">
         <div className="col-md-3 p-0">
-          {/* Sidebar occupies 3 columns on medium+ screens */}
           <AccountSideBar />
+          {/* Sidebar occupies 3 columns on medium+ screens */}
         </div>
-        <div className="col-md-4 mx-5 px-5">
+        <div className="col-md-4 mx-5 px-5 my-5 ">
           {/* "Listing Details" Section */}
           <div className="my-5 py-3">
             <h1 className="mb-5">Listing Details</h1>
             <Map />
-            <h4 className="my-2">Where on campus do you want to meet?</h4>
+            <h4 className="my-3">Where on campus do you want to meet?</h4>
           </div>
           <input
             type="text"
@@ -39,6 +52,8 @@ const CreateListing = () => {
               backgroundColor: "#e0e0e0",
               borderRight: "none",
             }}
+            value={bookTitle}
+            onChange={(e) => setBookTitle(e.target.value)}
           />
           <div className="my-3 d-flex">
             <input
@@ -52,6 +67,8 @@ const CreateListing = () => {
                 borderRight: "none",
                 backgroundColor: "#e0e0e0",
               }}
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
             />
             <select
               className="form-control py-2 mx-2"
@@ -62,6 +79,8 @@ const CreateListing = () => {
                 borderRight: "none",
                 backgroundColor: "#e0e0e0",
               }}
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
             >
               <option value="" disabled selected>
                 Select subject
@@ -82,24 +101,42 @@ const CreateListing = () => {
               borderRight: "none",
               backgroundColor: "#e0e0e0",
             }}
+            value={description}
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
           />
         </div>
-        <div className="col-md-4 p-0 position-relative">
+        <div
+          className="col-md-4 p-0 position-relative my-5 py-5"
+          style={{ textDecoration: "none" }}
+        >
           {" "}
-          {/* Set position-relative here */}
           {/* "Add Photos" Section */}
-          <div className="my-5 py-3">
-            <h1>Add Photos</h1>
-            <Dropzone onDrop={(acceptedFiles) => console.log(acceptedFiles)}>
+          <div className="my-5 py-5 ">
+            <Dropzone onDrop={handleDrop}>
               {({ getRootProps, getInputProps }) => (
                 <section className="dropzone my-5">
-                  <div {...getRootProps()}>
+                  <div {...getRootProps()} className="p-3  text-center">
                     <input {...getInputProps()} />
-                    <p>Add your images here, or click to select your images</p>
+                    <p className="p-3">
+                      Add your images here, or click to select your images
+                    </p>
                   </div>
                 </section>
               )}
             </Dropzone>
+            <div className="mt-3">
+              {preview.map((image, index) => (
+                <img
+                  key={index}
+                  src={image.preview}
+                  alt="Preview"
+                  style={{ width: "150px", marginBottom: "10px" }}
+                  className="mx-2"
+                />
+              ))}
+            </div>
             <button
               className="btn btn-primary position-absolute"
               style={{ bottom: "20px", right: "20px" }}

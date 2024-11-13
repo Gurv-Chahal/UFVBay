@@ -1,7 +1,6 @@
 import { testData } from "./Home.jsx";
 import "../public/Item.css";
 import Map from "../components/Map.jsx";
-import React from "react";
 import { useParams } from "react-router-dom";
 
 const Item = () => {

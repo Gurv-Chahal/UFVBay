@@ -2,7 +2,6 @@
 import { MapContainer } from "react-leaflet/MapContainer";
 import { TileLayer } from "react-leaflet/TileLayer";
 import { Marker, Popup } from "react-leaflet";
-import { useMap } from "react-leaflet/hooks";
 
 //Map component that will be in product page and create listing page
 const Map = () => {

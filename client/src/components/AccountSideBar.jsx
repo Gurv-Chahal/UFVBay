@@ -5,7 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 const AccountSideBar = () => {
   return (
     <div
-      className="h-100 z-0 col-2"
+      className="h-100 z-0 col-2 navbar-fixed"
       style={{
         backgroundColor: "#f8f9fa",
 
