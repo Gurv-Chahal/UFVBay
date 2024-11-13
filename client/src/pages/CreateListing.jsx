@@ -1,11 +1,14 @@
+import React, { useState } from "react";
 import AccountNavBar from "../components/AccountNavBar.jsx";
 import AccountSideBar from "../components/AccountSideBar.jsx";
-import { useState } from "react";
+
 import Dropzone from "react-dropzone";
 import Map from "../components/Map.jsx";
 import "../public/CreateListing.css";
 
 const CreateListing = () => {
+  const [position, setPosition] = useState(null);
+
   const [preview, setPreview] = useState([]);
   const [bookTitle, setBookTitle] = useState("");
   const [price, setPrice] = useState("");
@@ -39,8 +42,9 @@ const CreateListing = () => {
           {/* "Listing Details" Section */}
           <div className="my-5 py-3">
             <h1 className="mb-5">Listing Details</h1>
-            <Map />
-            <h4 className="my-3">Where on campus do you want to meet?</h4>
+            {/*Pass in position state to Map component */}
+            <Map position={position} setPosition={setPosition} />
+            <h4 className="my-2">Where on campus do you want to meet?</h4>
           </div>
           <input
             type="text"

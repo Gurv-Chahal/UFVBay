@@ -1,30 +1,55 @@
-//Import necessary libraries
-import { MapContainer } from "react-leaflet/MapContainer";
-import { TileLayer } from "react-leaflet/TileLayer";
-import { Marker, Popup } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvents,
+} from "react-leaflet";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
-//Map component that will be in product page and create listing page
-const Map = () => {
+const Map = ({ position, setPosition }) => {
+  const location = useLocation();
+
+  // Function to handle placing a marker on click
+  const MapClickHandler = () => {
+    useMapEvents({
+      click: (e) => {
+        setPosition([e.latlng.lat, e.latlng.lng]); // Set position state to the clicked coordinates on map
+      },
+    });
+    return null;
+  };
+
   return (
     <MapContainer
-      //Defines properties of the map including the coordinates, the level of zoom on the map, and size
       center={[49.0283, -122.285]}
       zoom={17}
       scrollWheelZoom={false}
       style={{ height: "300px", width: "100%" }}
     >
-      {/*Displays the map*/}
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {/*Reference marker for meetup*/}
-      <Marker position={[49.0283, -122.285]}>
-        {/*Notification above marker*/}
-        <Popup>
-          Seller wants to meet here. <br />
-        </Popup>
-      </Marker>
+
+      {/* Conditionally renders any page that starts with "/item/" */}
+      {location.pathname.startsWith("/item/") && (
+        <Marker position={[49.0283, -122.285]}>
+          <Popup>Seller wants to meet here</Popup>
+        </Marker>
+      )}
+
+      {/* Conditionally renders MapClickHnadler function only on the create-listing page */}
+      {location.pathname === "/create-listing" && <MapClickHandler />}
+
+      {position && (
+        <Marker position={position}>
+          <Popup>
+            Coordinates: {position[0].toFixed(4)}, {position[1].toFixed(4)}
+          </Popup>
+        </Marker>
+      )}
     </MapContainer>
   );
 };
