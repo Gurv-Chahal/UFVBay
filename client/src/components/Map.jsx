@@ -45,9 +45,7 @@ const Map = ({ position, setPosition }) => {
 
       {position && (
         <Marker position={position}>
-          <Popup>
-            Coordinates: {position[0].toFixed(4)}, {position[1].toFixed(4)}
-          </Popup>
+          <Popup>You want to meet here</Popup>
         </Marker>
       )}
     </MapContainer>
