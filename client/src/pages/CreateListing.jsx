@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import AccountNavBar from "../components/AccountNavBar.jsx";
 import AccountSideBar from "../components/AccountSideBar.jsx";
-
+import axios from "Axios";
 import Dropzone from "react-dropzone";
 import Map from "../components/Map.jsx";
 import "../public/CreateListing.css";
@@ -15,16 +15,32 @@ const CreateListing = () => {
   const [subject, setSubject] = useState(null);
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
-  const [coordinates, setCoordinates] = useState();
 
   const handleDrop = (acceptedFiles) => {
-    const newPreviews = acceptedFiles.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }));
+    const uploadImages = acceptedFiles.map((file) => {
+      const formData = new FormData();
+      formData.append("file", file); //Apends image file
+      formData.append("upload_preset", "UFVBay"); //Identifier for CloudinaryAPI to upload image
 
-    setImages((prev) => [...prev, ...acceptedFiles]);
-    setPreview((prev) => [...prev, ...newPreviews]);
+      //Use axios to post image files to the URL
+      return axios
+        .post(
+          `https://api.cloudinary.com/v1_1/dl3lcg7x5/image/upload`,
+          formData
+        )
+        .then((response) => response.data.secure_url); // Image URL from response
+    });
+
+    // When all uploads are complete, image state is set with spread operator to add the new URLs when another image is uploaded
+
+    Promise.all(uploadImages).then((urls) => {
+      setImages((prev) => [...prev, ...urls]);
+      const newPreviews = acceptedFiles.map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+      }));
+      setPreview((prev) => [...prev, ...newPreviews]);
+    });
   };
 
   return (
@@ -144,6 +160,7 @@ const CreateListing = () => {
             <button
               className="btn btn-primary position-absolute"
               style={{ bottom: "20px", right: "20px" }}
+              onClick={() => console.log(images)}
             >
               Post Listing
             </button>
