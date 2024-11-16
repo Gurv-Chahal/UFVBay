@@ -1,6 +1,8 @@
 import { testData } from "./Home.jsx";
 import { useState, useEffect } from "react";
 import "../public/Item.css";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import Map from "../components/Map.jsx";
 import { useParams } from "react-router-dom";
 
@@ -61,18 +63,23 @@ const Item = () => {
         ></div>
 
         {/* Foreground image */}
-        <button style={{ zIndex: 3 }} onClick={DecSlider}>
-          Left
-        </button>
+
+        <ArrowBackIosIcon
+          style={{ zIndex: 3, color: "white", fontSize: "2rem" }}
+          onClick={DecSlider}
+        />
+
         <img
           src={slider}
           alt="UFVBay logo"
           className="w-50 position-relative mx-auto"
           style={{ zIndex: 2, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)" }}
         />
-        <button onClick={IncSlider} style={{ zIndex: 3 }}>
-          Right
-        </button>
+
+        <ArrowForwardIosIcon
+          onClick={IncSlider}
+          style={{ zIndex: 3, color: "white", fontSize: "2rem" }}
+        />
       </div>
       {/*Makes right side scrollable*/}
       <div className="col-3" style={{ height: "100vh", overflowY: "auto" }}>
