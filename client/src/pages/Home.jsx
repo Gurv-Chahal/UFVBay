@@ -1,16 +1,16 @@
-import React from "react";
 import Navbar from "../components/Navbar.jsx";
 import HomeSideBar from "../components/HomeSideBar.jsx";
 import ufvbaylogo from "../images/ufvbaylogo.png";
 import testingimg from "../images/testingimg.jpg";
+import testingimg2 from "../images/testimg2.jpeg";
 import ProductCards from "../components/ProductCards.jsx";
-import HomeMain from "../components/HomeMain.jsx";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // Test Data for cards
 export const testData = [
   {
-    image: testingimg,
+    imageList: [testingimg, testingimg2],
+    image: [testingimg, testingimg2][0],
     name: "Single Variable Calculus Early Transcendentals, 8th Edition by James Stewart ",
     price: "20.99$",
     author: "Ronald E. Walpole",

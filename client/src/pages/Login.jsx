@@ -1,13 +1,12 @@
 import { useState } from "react";
 import "../public/Auth.css";
 import ufvbaylogo from "../images/ufvbaylogo.png";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   loginAPICall,
   saveLoggedInUser,
   storeToken,
 } from "../services/AuthService.js";
-import axios from "axios";
 
 const Auth = () => {
   const [username, setUsername] = useState("");

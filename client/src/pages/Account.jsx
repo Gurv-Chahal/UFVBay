@@ -1,4 +1,3 @@
-import react from "react";
 import AccountNavBar from "../components/AccountNavBar.jsx";
 import AccountSideBar from "../components/AccountSideBar.jsx";
 

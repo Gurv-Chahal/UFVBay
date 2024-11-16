@@ -1,6 +1,5 @@
-import React from "react";
 import ufvbaylogo from "../images/ufvbaylogo.png";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../public/navbar.css";
 
 //Navbar component
