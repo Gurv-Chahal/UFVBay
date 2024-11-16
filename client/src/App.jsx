@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Home from "./pages/Home.jsx";
 import Account from "./pages/Account.jsx";
 import Login from "./pages/Login.jsx";

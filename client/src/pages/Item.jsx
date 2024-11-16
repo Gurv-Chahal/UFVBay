@@ -1,9 +1,12 @@
 import { testData } from "./Home.jsx";
+import { useState, useEffect } from "react";
 import "../public/Item.css";
 import Map from "../components/Map.jsx";
 import { useParams } from "react-router-dom";
 
 const Item = () => {
+  const [count, setCount] = useState(0);
+  const [slider, setSlider] = useState(null);
   {
     /*Checks the http address and sees if the Product id is there*/
     /*Gets the product ID and checks if it's in the testData object in Home.jsx*/
@@ -12,12 +15,32 @@ const Item = () => {
 
   const thisProduct = testData.find((prod) => prod.id === Number(productId));
 
+  useEffect(() => {
+    if (thisProduct) {
+      setSlider(thisProduct.imageList[0]);
+    }
+  }, [thisProduct]);
+
+  const IncSlider = () => {
+    const newCount = (count + 1) % thisProduct.imageList.length;
+    setCount(newCount);
+    const newSlider = thisProduct.imageList[newCount];
+    setSlider(newSlider);
+  };
+
+  const DecSlider = () => {
+    const newCount =
+      (count - 1 + thisProduct.imageList.length) % thisProduct.imageList.length;
+    setCount(newCount);
+    setSlider(thisProduct.imageList[count]);
+  };
+
   return (
     <div className="container-fluid row" style={{ height: "100vh" }}>
       <div
         className="col-9 d-flex justify-content-center align-items-center position-relative border "
         style={{
-          backgroundImage: `url(${thisProduct.image})`,
+          backgroundImage: `url(${slider})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           height: "100%",
@@ -38,12 +61,18 @@ const Item = () => {
         ></div>
 
         {/* Foreground image */}
+        <button style={{ zIndex: 3 }} onClick={DecSlider}>
+          Left
+        </button>
         <img
-          src={thisProduct.image}
+          src={slider}
           alt="UFVBay logo"
-          className="w-50 position-relative"
+          className="w-50 position-relative mx-auto"
           style={{ zIndex: 2, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)" }}
         />
+        <button onClick={IncSlider} style={{ zIndex: 3 }}>
+          Right
+        </button>
       </div>
       {/*Makes right side scrollable*/}
       <div className="col-3" style={{ height: "100vh", overflowY: "auto" }}>

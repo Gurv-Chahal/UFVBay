@@ -1,7 +1,6 @@
-import React from "react";
 import "../public/HomeSideBar.css";
 import "../public/navbar.css";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { isUserLoggedIn, logout } from "../services/AuthService.js";
 
 const HomeSideBar = () => {
