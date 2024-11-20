@@ -7,6 +7,8 @@ import Map from "../components/Map.jsx";
 import "../public/CreateListing.css";
 
 const CreateListing = () => {
+
+  //State to be posted
   const [position, setPosition] = useState(null);
 
   const [preview, setPreview] = useState([]);
