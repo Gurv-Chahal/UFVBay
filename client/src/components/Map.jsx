@@ -35,7 +35,7 @@ const Map = ({ position, setPosition }) => {
 
       {/* Conditionally renders any page that starts with "/item/" */}
       {location.pathname.startsWith("/item/") && (
-        <Marker position={[49.0283, -122.285]}>
+        <Marker position={position}>
           <Popup>Seller wants to meet here</Popup>
         </Marker>
       )}

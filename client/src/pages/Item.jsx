@@ -91,7 +91,7 @@ const Item = () => {
           <h5 className="my-2">CA {thisProduct.price}</h5>
           <div className="my-5">
             <h5>Meeting Spot 📍 </h5>
-            <Map />
+            <Map position={thisProduct.location} />
           </div>
           <h5>Listing Description: </h5>
           {/*Description property that is retrieved from testData*/}
