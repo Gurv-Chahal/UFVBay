@@ -1,9 +1,14 @@
 import "../public/HomeSideBar.css";
 import "../public/navbar.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 import { Link } from "react-router-dom";
 import { isUserLoggedIn, logout } from "../services/AuthService.js";
+import { useState } from "react";
 
 const HomeSideBar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   // ---------
   // functionality for log in button on sidebar
 
@@ -49,10 +54,36 @@ const HomeSideBar = () => {
           Browse
         </button>
 
-        <button className="btn my-2 py-3 d-flex align-items-center text-start gradient-button">
-          <i className="bi bi-book px-3" style={{ fontSize: "30px" }} />
-          Subjects
-        </button>
+        <div className="dropdown">
+          <button
+            className="btn my-2 py-3 d-flex align-items-center text-start gradient-button dropdown-toggle"
+            type="button"
+            id="subjectsDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            style={{ width: "100%" }}
+          >
+            <i className="bi bi-book px-3" style={{ fontSize: "30px" }} />
+            Subjects
+          </button>
+          <ul className="dropdown-menu" aria-labelledby="subjectsDropdown">
+            <li>
+              <Link to="/math" className="dropdown-item">
+                Math
+              </Link>
+            </li>
+            <li>
+              <Link to="/science" className="dropdown-item">
+                Science
+              </Link>
+            </li>
+            <li>
+              <Link to="/history" className="dropdown-item">
+                History
+              </Link>
+            </li>
+          </ul>
+        </div>
 
         <button className="btn my-2 py-3 d-flex align-items-center text-start gradient-button">
           <i className="bi bi-bookmark px-3" style={{ fontSize: "30px" }} />
