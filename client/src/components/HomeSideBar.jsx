@@ -106,30 +106,28 @@ const HomeSideBar = ({ onSubjectChange }) => {
            also using onClick if user clicks logout then logout() method will handle it*/}
 
         {!isAuth && (
-          <Link to="/login" style={{ textDecoration: "none" }}>
-            <button className="btn my-3 py-3 d-flex align-items-center text-start gradient-button">
-              <i
-                className="bi bi-box-arrow-in-right px-3"
-                style={{ fontSize: "30px" }}
-              />
-              Log In
-            </button>
+          <Link
+            to="/login"
+            className="d-flex align-items-center my-3 py-3 text-decoration-none btn gradient-button"
+          >
+            <i
+              className="bi bi-box-arrow-in-right px-3"
+              style={{ fontSize: "30px" }}
+            />
+            Log In
           </Link>
         )}
 
         {isAuth && (
           <Link
             to="/login"
-            style={{ textDecoration: "none" }}
-            onClick={handleLogout}
+            className="d-flex align-items-center my-3 py-3 text-decoration-none btn gradient-button"
           >
-            <button className="btn my-3 py-3 d-flex align-items-center text-start gradient-button">
-              <i
-                className="bi bi-box-arrow-in-right px-3"
-                style={{ fontSize: "30px" }}
-              />
-              Log Out
-            </button>
+            <i
+              className="bi bi-box-arrow-in-right px-3"
+              style={{ fontSize: "30px" }}
+            />
+            Log Out
           </Link>
         )}
       </div>

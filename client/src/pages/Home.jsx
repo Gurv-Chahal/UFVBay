@@ -12,7 +12,6 @@ const Home = () => {
     //If the subject is "ALL" the state is rest and the normal browse page is displayed"
     //If not the data is filtered
     setSelectedSubject(subject === "ALL" ? "" : subject);
-    console.log("Selected Subject: ", subject);
   };
   //Data filtering based on the subject that is being passed in
   const filteredData = selectedSubject
