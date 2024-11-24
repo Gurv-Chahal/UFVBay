@@ -1,10 +1,10 @@
-import { testData } from "./Home.jsx";
 import { useState, useEffect } from "react";
 import "../public/Item.css";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import Map from "../components/Map.jsx";
 import { useParams } from "react-router-dom";
+import testData from "../public/testData.jsx";
 
 const Item = () => {
   const [count, setCount] = useState(0);

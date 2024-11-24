@@ -6,9 +6,29 @@ import { Link } from "react-router-dom";
 import { isUserLoggedIn, logout } from "../services/AuthService.js";
 import { useState } from "react";
 
-const HomeSideBar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+//Dropdown menu that records which subject is being selected
+const SubjectMenu = ({ onSubjectClick }) => {
+  return (
+    <ul className="dropdown-menu" aria-labelledby="subjectsDropdown">
+      <li className="dropdown-item" onClick={() => onSubjectClick("MATH")}>
+        Math
+      </li>
+      <li className="dropdown-item" onClick={() => onSubjectClick("PHYSICS")}>
+        Physics
+      </li>
+      <li
+        className="dropdown-item"
+        onClick={() => onSubjectClick("COMPUTER SCIENCE")}
+      >
+        Computer Science
+      </li>
+    </ul>
+  );
+};
 
+//HomeSideBar component has all elements in the menu and takes in parameter onSubjectChange
+//onSubjectChange takes in values from SubjectMenu component
+const HomeSideBar = ({ onSubjectChange }) => {
   // ---------
   // functionality for log in button on sidebar
 
@@ -49,7 +69,10 @@ const HomeSideBar = () => {
           </button>
         </Link>
 
-        <button className="btn my-3 py-3 d-flex align-items-center text-start gradient-button">
+        <button
+          className="btn my-3 py-3 d-flex align-items-center text-start gradient-button"
+          onClick={() => onSubjectChange("ALL")}
+        >
           <i className="bi bi-bag px-3" style={{ fontSize: "30px" }} />
           Browse
         </button>
@@ -66,23 +89,7 @@ const HomeSideBar = () => {
             <i className="bi bi-book px-3" style={{ fontSize: "30px" }} />
             Subjects
           </button>
-          <ul className="dropdown-menu" aria-labelledby="subjectsDropdown">
-            <li>
-              <Link to="/math" className="dropdown-item">
-                Math
-              </Link>
-            </li>
-            <li>
-              <Link to="/science" className="dropdown-item">
-                Science
-              </Link>
-            </li>
-            <li>
-              <Link to="/history" className="dropdown-item">
-                History
-              </Link>
-            </li>
-          </ul>
+          <SubjectMenu onSubjectClick={(subject) => onSubjectChange(subject)} />
         </div>
 
         <button className="btn my-2 py-3 d-flex align-items-center text-start gradient-button">
