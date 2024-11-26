@@ -17,7 +17,6 @@ public class Listing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Use standard naming conventions (camelCase)
     @Column(nullable = false)
     private String title;
 

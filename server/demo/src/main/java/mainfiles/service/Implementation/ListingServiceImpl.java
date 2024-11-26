@@ -26,7 +26,7 @@ public class ListingServiceImpl implements ListingService {
 
     @Override
     public ListingDTO createListing(ListingDTO listingDTO) {
-        // Retrieve the user (you need to implement getCurrentUserId())
+        // Retrieve the user
         Long currentUserId = userUtil.getCurrentUserId();
         User user = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + currentUserId));
@@ -74,7 +74,7 @@ public class ListingServiceImpl implements ListingService {
         existingListing.setSubject(listingDTO.getSubject());
         existingListing.setAmount(listingDTO.getAmount());
         existingListing.setDescription(listingDTO.getDescription());
-        existingListing.setImages(listingDTO.getImages()); // Update images
+        existingListing.setImages(listingDTO.getImages());
 
 
         // Save updated listing
