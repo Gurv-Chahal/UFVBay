@@ -5,11 +5,7 @@ UFVBay is a web-application developed for UFV students to conduct in person meet
 
 
 ## Visuals
-[![UFVBay-Browse.jpg](https://i.postimg.cc/qqwTc8Gp/UFVBay-Browse.jpg)](https://postimg.cc/bSZWpSM5)
 
-[![UFVBay-Item.jpg](https://i.postimg.cc/25gSPnMz/UFVBay-Item.jpg)](https://postimg.cc/Z9FmNvJg)
-
-[![UFVBay-Create.jpg](https://i.postimg.cc/fL0fNjb5/UFVBay-Create.jpg)](https://postimg.cc/phRFQjzn)
 
 
 
