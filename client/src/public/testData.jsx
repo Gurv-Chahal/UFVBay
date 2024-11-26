@@ -1,6 +1,10 @@
 import ufvbaylogo from "../images/ufvbaylogo.png";
 import testingimg from "../images/testingimg.jpg";
 import testingimg2 from "../images/testimg2.jpeg";
+import testingimg3 from "../images/testingimg3.jpg";
+import testingimg4 from "../images/testingimg4.jpg";
+import testingimg5 from "../images/testingimg5.jpg";
+import testingimg6 from "../images/testingimg6.jpg";
 
 // Test Data for cards
 
@@ -18,8 +22,8 @@ const testData = [
       "lightly used don't need it anymore, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   },
   {
-    imageList: [testingimg, testingimg2],
-    image: [testingimg, testingimg2][0],
+    imageList: [testingimg4, testingimg3],
+    image: [testingimg4, testingimg3][0],
     location: [49.0284, -122.2832],
     name: "Ralph P. Grimaldi - Discrete and combinatorial mathematics_ An Applied Introduction-Pearson (2004)",
     price: "20.99$",
@@ -29,11 +33,15 @@ const testData = [
     description: "lightly used don't need it anymore",
   },
   {
-    image: ufvbaylogo,
-    name: "Product1",
-    price: "20 bucks",
-    subject: "PHYSICS",
-    description: "lightly used don't need it anymore",
+    imageList: [testingimg5, testingimg6],
+    image: [testingimg5, testingimg6][0],
+    location: [49.0277, -122.285],
+    name: "Data Structures and Problem Solving using Java",
+    price: "15.99$",
+    subject: "COMPUTER SCIENCE",
+    id: 11230,
+    description:
+      "Finished Comp 251 just want to get rid of it and make space on my shelf. No negotations this is the final listing price",
   },
   {
     image: ufvbaylogo,

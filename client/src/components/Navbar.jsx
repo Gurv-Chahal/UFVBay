@@ -1,10 +1,19 @@
 import React from "react";
 import ufvbaylogo from "../images/ufvbaylogo.png";
 import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
 import "../public/navbar.css";
 
 //Navbar component
-const Navbar = () => {
+const Navbar = ({ onSearch }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    onSearch(searchQuery);
+    console.log(searchQuery);
+  };
+
   return (
     <nav
       //Sets nav bar colour and makes it appear above homeside navbar
@@ -21,13 +30,17 @@ const Navbar = () => {
           />
           <h2 className="py-2">UFVBay</h2>
         </a>
-
-        <form className="d-flex order-1 order-md-0 search-bar">
+        {/*Search bar jsx*/}
+        <form
+          className="d-flex order-1 order-md-0 search-bar"
+          onSubmit={handleSearch}
+        >
           <input
             className="form-control "
             type="search"
             placeholder="Search"
             aria-label="Search"
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <button className="btn btn-outline-success" type="submit">
             <i className="bi bi-search"></i>
