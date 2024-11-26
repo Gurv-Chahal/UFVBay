@@ -5,6 +5,9 @@ import axios from "Axios";
 import Dropzone from "react-dropzone";
 import Map from "../components/Map.jsx";
 import "../public/CreateListing.css";
+import { addListing } from "../services/ListingService.js";
+import { useNavigate } from "react-router-dom";
+
 
 const CreateListing = () => {
 
@@ -14,7 +17,7 @@ const CreateListing = () => {
   const [preview, setPreview] = useState([]);
   const [bookTitle, setBookTitle] = useState("");
   const [price, setPrice] = useState("");
-  const [subject, setSubject] = useState(null);
+  const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
 
@@ -22,7 +25,7 @@ const CreateListing = () => {
     const uploadImages = acceptedFiles.map((file) => {
       const formData = new FormData();
       formData.append("file", file); //Apends image file
-      formData.append("upload_preset", "UFVBay"); //Identifier for CloudinaryAPI to upload image
+      formData.append("upload_preset", "UFVBay");
 
       //Use axios to post image files to the URL
       return axios
@@ -44,6 +47,42 @@ const CreateListing = () => {
       setPreview((prev) => [...prev, ...newPreviews]);
     });
   };
+
+
+
+  const handleSubmit = () => {
+    // Validate inputs
+    if (!bookTitle || !price || !subject) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    // Construct the listing data object
+    const listingData = {
+      title: bookTitle,
+      subject: subject,
+      amount: parseFloat(price),
+      description: description,
+      images: images,
+    };
+
+    // Call addListing to send data to the backend - parameter is the ListingData object
+    addListing(listingData)
+        .then((response) => {
+          console.log("Listing added:", response.data);
+
+        })
+        .catch((error) => {
+          console.error("Error adding listing:", error);
+          // Show an error message to the user
+          alert("An error occurred while adding the listing. Please try again.");
+        });
+  };
+
+
+
+
+
 
   return (
     <div
@@ -162,7 +201,7 @@ const CreateListing = () => {
             <button
               className="btn btn-primary position-absolute"
               style={{ bottom: "20px", right: "20px" }}
-              onClick={() => console.log(images)}
+              onClick={handleSubmit}
             >
               Post Listing
             </button>

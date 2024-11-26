@@ -16,16 +16,16 @@ export const registerAPICall = (userData) => {
 
 // create token
 export const storeToken = (token) => {
-  // localStorage is a storage object provided by browsers that allow you to store key
-  // value pairs in the browser. data stored in localStorage stays even if browser is closed
+  console.log('Storing token:', token);
   return localStorage.setItem("token", token);
 };
 
-// get token
 export const getToken = () => {
-  // gets the token from localstorage
-  return localStorage.getItem("token");
+  const token = localStorage.getItem("token");
+  console.log('Retrieved token from localStorage:', token);
+  return token;
 };
+
 
 // ---------
 // change button from log in to log out when the user is logged in

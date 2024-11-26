@@ -15,24 +15,32 @@ const Auth = () => {
 
   // made it async so that it waits for login api call to finish to make sure everything
   // runs in correct order
-  async function handlelogin() {
-    await loginAPICall(username, password)
-      .then((response) => {
-        console.log(response.data);
+    async function handlelogin() {
+        await loginAPICall(username, password)
+            .then((response) => {
 
-        // basic authentication token used to authenticate users using username password
-        // even if the browser gets closed and reopened. In this case its just storing the token
-        const token = "Basic" + window.btoa(username + ":" + password);
-        storeToken(token);
+                // Extract JWT token
+                let token = response.data.accessToken;
 
-        saveLoggedInUser(username);
+                // Remove 'Bearer ' prefix if it exists
+                token = token.replace(/^Bearer\s+/i, '');
 
-        navigator("/");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+                // Remove all whitespace characters
+                token = token.replace(/\s+/g, '');
+
+                storeToken(token);
+
+                saveLoggedInUser(username);
+
+                // Navigate to the home page
+                navigator("/");
+            })
+            .catch((error) => {
+                console.log('Login error:', error);
+            });
+    }
+
+
 
   return (
     <div className="w-full h-screen d-flex align-items-center justify-content-center">
