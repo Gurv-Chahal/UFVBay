@@ -11,10 +11,19 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import mainfiles.repository.UserRepository;
+import mainfiles.entity.User;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 // Need @Configuration annotation to indicate to spring that the class provides configuration for security settings
 @Configuration
@@ -52,7 +61,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
 
-        http.csrf().disable()
+        http.cors().and().csrf().disable()
 
                 // this method configures authorization for HTTP requests
                 // lambda expression is appropriate here, it takes a parameter called authorize (type is inferred)
@@ -93,6 +102,28 @@ public class SpringSecurityConfig {
 
         // creates and provides authenticationmanager which allows spring to perform authentication operations
         return configuration.getAuthenticationManager();
+    }
+
+
+
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // allow access to localhost:3000
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        // allow get, post, put, etc apis through cors
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        // allow any header like Authorization
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 
 

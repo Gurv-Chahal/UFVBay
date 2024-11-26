@@ -1,10 +1,13 @@
-package mainfiles.Entity;
+package mainfiles.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /*
@@ -51,5 +54,8 @@ public class User {
   @Column(nullable = false)
   private String password;
 
+  // One-to-Many relationship with Listing
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Listing> listings = new ArrayList<>();
 
 }

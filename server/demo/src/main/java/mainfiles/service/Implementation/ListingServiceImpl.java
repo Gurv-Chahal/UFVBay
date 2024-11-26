@@ -74,6 +74,8 @@ public class ListingServiceImpl implements ListingService {
         existingListing.setSubject(listingDTO.getSubject());
         existingListing.setAmount(listingDTO.getAmount());
         existingListing.setDescription(listingDTO.getDescription());
+        existingListing.setImages(listingDTO.getImages()); // Update images
+
 
         // Save updated listing
         Listing updatedListing = listingRepository.save(existingListing);
