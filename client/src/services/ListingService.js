@@ -11,10 +11,11 @@ const BASE_REST_API_URL = 'http://localhost:8080';
 axios.interceptors.request.use(
     function (config) {
 
+        // get the token
         const token = getToken();
 
         if (token) {
-            // Set Authorization header to 'Bearer ' + token
+            // set Authorization header to 'Bearer ' + token
             config.headers["Authorization"] = 'Bearer ' + token;
 
         }
@@ -26,6 +27,8 @@ axios.interceptors.request.use(
     }
 );
 
+// may delete some of these rest apis later if we dont need them
+
 
 // Function to get all listings
 export function getAllListings() {
@@ -35,6 +38,11 @@ export function getAllListings() {
 // Function to add a new listing - listing object is where the JSON is held
 export function addListing(listing) {
     return axios.post(`${BASE_REST_API_URL}/api/listings`, listing);
+}
+
+// Function to get user-specific listings
+export function getUserListings() {
+    return axios.get(`${BASE_REST_API_URL}/api/listings/user`);
 }
 
 // Function to get a listing by ID

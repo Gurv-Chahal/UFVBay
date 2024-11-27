@@ -1,4 +1,5 @@
 import axios from "Axios";
+import { jwtDecode } from "jwt-decode";
 
 export const loginAPICall = (usernameOrEmail, password) => {
   return axios.post("http://localhost:8080/auth/login", {
@@ -25,6 +26,22 @@ export const getToken = () => {
   console.log('Retrieved token from localStorage:', token);
   return token;
 };
+
+export const getUserInfo = () => {
+  const token = getToken();
+  if (!token) {
+    return null;
+  }
+
+  //Decode token to get user info (if JWT contains user info)
+  //may need to install jwt-decode library: npm install jwt-decode
+  const decoded = jwtDecode(token);
+
+
+  return decoded;
+}
+
+
 
 
 // ---------

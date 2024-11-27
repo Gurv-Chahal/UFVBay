@@ -22,12 +22,13 @@ const AccountNavBar = () => {
         </a>
 
         <div className="d-flex order-0 order-md-1">
-          <button //Message Button
-            className="btn border-0"
-            style={{ padding: "15px 20px", border: "none" }}
-          >
-            <i className="bi bi-chat-left" style={{ fontSize: "32px" }}></i>
-          </button>
+          {/*Message button*/}
+          {/*<button */}
+          {/*  className="btn border-0"*/}
+          {/*  style={{ padding: "15px 20px", border: "none" }}*/}
+          {/*>*/}
+          {/*  <i className="bi bi-chat-left" style={{ fontSize: "32px" }}></i>*/}
+          {/*</button>*/}
           {/*Account Button*/}
           <button
             className="btn border-0"

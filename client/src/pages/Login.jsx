@@ -19,20 +19,17 @@ const Auth = () => {
         await loginAPICall(username, password)
             .then((response) => {
 
-                // Extract JWT token
+                // extract JWT token
                 let token = response.data.accessToken;
 
-                // Remove 'Bearer ' prefix if it exists
+                // had to do this weird solution because I kept getting error with bearer token not correctly passing
+                // remove 'Bearer ' from front if it exists
                 token = token.replace(/^Bearer\s+/i, '');
-
-                // Remove all whitespace characters
+                // remove all whitespace characters
                 token = token.replace(/\s+/g, '');
 
                 storeToken(token);
-
                 saveLoggedInUser(username);
-
-                // Navigate to the home page
                 navigator("/");
             })
             .catch((error) => {
@@ -45,7 +42,7 @@ const Auth = () => {
   return (
     <div className="w-full h-screen d-flex align-items-center justify-content-center">
       <div className="row w-100 vh-100">
-        {/*Log In half of auth page */}
+        {/*logIn half of auth page */}
         <div className="col-6 border d-flex flex-column justify-content-center">
           <h1 className="text-center" style={{ fontSize: "4rem" }}>
             Sign In
