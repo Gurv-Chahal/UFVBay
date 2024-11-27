@@ -77,7 +77,7 @@ public class JwtToken {
         Jwts.parser()
                 .setSigningKey(key())
                 .build()
-                .parse(token); // parses and validates the token
+                .parse(token);
 
         // if no exceptions are thrown then token is vlad
         return true;

@@ -10,7 +10,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -78,17 +80,9 @@ public class SpringSecurityConfig {
                     authorize.anyRequest().authenticated();
                 })
 
-                // this gives the user information like username and email which was obtained in the
-                // CustomUserDetailsService class so that it can be used for login authentication
-                .userDetailsService(userDetailsService)
-
-                // enable http basic authentication which prompts user for username/password pop up
-                .httpBasic(Customizer.withDefaults());
-
-        http.exceptionHandling((exception) -> exception
-                .authenticationEntryPoint(authEntryPoint));
-
-        http.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+                .exceptionHandling((exception) -> exception
+                .authenticationEntryPoint(authEntryPoint))
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
