@@ -27,21 +27,26 @@ export const getToken = () => {
   return token;
 };
 
-export const getUserInfo = () => {
+export const getUserInfo = async () => {
   const token = getToken();
+  console.log("Token:", token);
+
   if (!token) {
     return null;
   }
 
-  //Decode token to get user info (if JWT contains user info)
-  //may need to install jwt-decode library: npm install jwt-decode
-  const decoded = jwtDecode(token);
+  try {
 
+    const response = await axios.get(`http://localhost:8080/api/listings/userinfo`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-  return decoded;
-}
-
-
+    return response.data; // This should contain the user's name and email
+  } catch (error) {
+    console.error("error fetching user info from backend:", error);
+    return null;
+  }
+};
 
 
 // ---------

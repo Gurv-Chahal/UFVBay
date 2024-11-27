@@ -14,6 +14,8 @@ const AccountInfo = () => {
 
                 // calls to fetch user data using rest api, must also decode JWT token
                 const userInfo = await getUserInfo();
+                console.log("Fetched userInfo:", userInfo); // Add this line
+
 
                 // update user state variable with the fetched data
                 setUser(userInfo);
@@ -44,6 +46,11 @@ const AccountInfo = () => {
             {/*display email*/}
             <p>
                 <strong>Email:</strong> {user.email}
+            </p>
+
+            {/*display email*/}
+            <p>
+                <strong>Username:</strong> {user.username}
             </p>
 
         </div>
