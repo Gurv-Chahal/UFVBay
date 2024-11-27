@@ -15,15 +15,15 @@ import java.util.Date;
 @Component
 public class JwtToken {
 
-    // Injects the JWT secret value from the application.properties file
+    // injects the JWT secret value from the application.properties file
     @Value("${app.jwt-secret}")
     private String jwtSecret;
 
-    // Injects the JWT expiration time from the application.properties file
+    // injects the JWT expiration time from the application.properties file
     @Value("${app.jwt-expiration-milliseconds}")
     private long jwtExpirationDate;
 
-    // Method to generate a JWT token for an authenticated user
+    // method to Generate a JWT token for an authenticated user
     public String generateToken(Authentication authentication) {
 
         // Extracts the username of the authenticated user

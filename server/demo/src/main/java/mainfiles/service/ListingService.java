@@ -16,5 +16,6 @@ public interface ListingService {
     List<ListingDTO> getAllListings();
     ListingDTO updateListing(Long id, ListingDTO listingDTO);
     void deleteListing(Long id);
+    List<ListingDTO> getListingsByUserId(Long userId);
 
 }

@@ -25,7 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-// Need @Configuration annotation to indicate to spring that the class provides configuration for security settings
+// Need @Configuration annotation to inject bean into spring context so that spring can take care of class
 @Configuration
 public class SpringSecurityConfig {
 
@@ -107,6 +107,7 @@ public class SpringSecurityConfig {
 
 
 
+    // had to create this to stop CORS error in terminal
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

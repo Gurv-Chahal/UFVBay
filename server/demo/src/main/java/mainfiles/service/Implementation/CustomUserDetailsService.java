@@ -47,16 +47,16 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException
                         ("User not found with username or email: " + usernameOrEmail));
 
-        // Assign default role using GrantedAuthority which is Spring interface
+        // assign default role using GrantedAuthority which is Spring interface
         GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_ADMIN");
 
-        // Create a new ArrayList to hold authorities
+        // create a new ArrayList to hold authorities
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         // Add the authority to the list
         authorities.add(authority);
 
-        // Return UserDetails implementation with default authority
+        // return UserDetails implementation with default authority
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),

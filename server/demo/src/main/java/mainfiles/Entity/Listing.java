@@ -28,14 +28,14 @@ public class Listing {
 
     private String description;
 
-    // Add the images field
+    // add the images field
     @ElementCollection
     @CollectionTable(name = "listing_images", joinColumns = @JoinColumn(name = "listing_id"))
     @Column(name = "image_url")
     private List<String> images;
 
 
-    // Many-to-One relationship with User
+    // many to One relationship with User
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
