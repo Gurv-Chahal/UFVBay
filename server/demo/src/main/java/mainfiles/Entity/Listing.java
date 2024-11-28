@@ -28,15 +28,18 @@ public class Listing {
 
     private String description;
 
-    // add the images field
+    // element collection specifies image urls to be stored in a different table
     @ElementCollection
+    // new table is called listing_images and it joins columns with listing_id
     @CollectionTable(name = "listing_images", joinColumns = @JoinColumn(name = "listing_id"))
     @Column(name = "image_url")
+    // stores image urls from Cloudinary as Strings in database
     private List<String> images;
 
 
-    // many to One relationship with User
+    // many to One relationship with User and only loads user from database if specifically asked
     @ManyToOne(fetch = FetchType.LAZY)
+    // join user_id column in database table
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

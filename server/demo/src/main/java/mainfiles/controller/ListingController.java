@@ -57,42 +57,57 @@ public class ListingController {
     // Used in Item.jsx to get listing data by product id
     @GetMapping("/{id}")
     public ResponseEntity<ListingDTO> getListingById(@PathVariable Long id) {
+
+        // retrieves listing by id using implementation in ListingServiceImpl
         ListingDTO listing = listingService.getListingById(id);
         return new ResponseEntity<>(listing, HttpStatus.OK);
     }
 
 
-    // Get All Listings
+    // Get All Listings - used in home.jsx
     @GetMapping
     public ResponseEntity<List<ListingDTO>> getAllListings() {
+
+        // retrieve all listings by using implementation of getalllistings in listingserviceImnpl
         List<ListingDTO> listings = listingService.getAllListings();
         return new ResponseEntity<>(listings, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ListingDTO> updateListing(@PathVariable Long id, @RequestBody ListingDTO listingDTO) {
+        // call update listing implementation
         ListingDTO updatedListing = listingService.updateListing(id, listingDTO);
         return new ResponseEntity<>(updatedListing, HttpStatus.OK);
     }
 
+    // used in Item.jsx
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteListing(@PathVariable Long id) {
+        // calls delete listing method implementation
         listingService.deleteListing(id);
         return new ResponseEntity<>("Listing deleted successfully", HttpStatus.OK);
     }
 
     @GetMapping("/user")
+    // used in UserListings.jsx
     public ResponseEntity<List<ListingDTO>> getUserListings() {
+
+        //  get user id
         Long currentUserId = userUtil.getCurrentUserId();
+
+        // then find listings associated with that user id
         List<ListingDTO> listings = listingService.getListingsByUserId(currentUserId);
         return new ResponseEntity<>(listings, HttpStatus.OK);
     }
 
     @GetMapping("/userinfo")
+    // Used in accountinfo.jsx
     public ResponseEntity<UserDTO> getUserInfo() {
 
-        // extract user ID from the JWT token
+        // get user id
         Long userId = userUtil.getCurrentUserId();
+
+        // find user data and put it into an object by using user id to query database
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
@@ -102,6 +117,8 @@ public class ListingController {
 
         // map user entity to UserDTO
         UserDTO userDTO = UserMapper.mapToUserDTO(user);
+
+        // return userDTO to client
         return ResponseEntity.ok(userDTO);
     }
 

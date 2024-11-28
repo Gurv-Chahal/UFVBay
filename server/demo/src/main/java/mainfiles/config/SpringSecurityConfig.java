@@ -37,7 +37,7 @@ public class SpringSecurityConfig {
     private JwtAEP authEntryPoint;
     private JwtAuthFilter authFilter;
 
-    // contructor
+    // contructor used to inject beans from fields
     public SpringSecurityConfig(CustomUserDetailsService userDetailsService,
                                 JwtAEP authEntryPoint, JwtAuthFilter authFilter) {
         this.userDetailsService = userDetailsService;
@@ -115,6 +115,7 @@ public class SpringSecurityConfig {
         configuration.setAllowCredentials(true);
 
 
+        // allow every endpoint through CORS
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 

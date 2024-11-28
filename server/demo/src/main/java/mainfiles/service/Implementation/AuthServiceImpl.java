@@ -104,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
     getContext() retrieves the context, and setAuthentication(authentication) saves the user's authentication info. */
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    // JWT code
+    // generate JWT token
     String token = jwtToken.generateToken(authentication);
     
 
