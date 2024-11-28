@@ -7,15 +7,19 @@ package mainfiles.service;
 
 
 import mainfiles.dto.ListingDTO;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 public interface ListingService {
 
-    ListingDTO createListing(ListingDTO listingDTO);
+    ListingDTO createListing(ListingDTO listingDTO, MultipartFile[] images) throws Exception;
     ListingDTO getListingById(Long id);
     List<ListingDTO> getAllListings();
     ListingDTO updateListing(Long id, ListingDTO listingDTO);
     void deleteListing(Long id);
     List<ListingDTO> getListingsByUserId(Long userId);
+
+
 
 }

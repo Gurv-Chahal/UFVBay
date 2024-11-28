@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import mainfiles.utility.UserUtil;
+import org.springframework.web.multipart.MultipartFile;
 
 // to access createlisting make sure to put JWT token from logging in into the bearer token field for createlisting api
 // this way it associates the jwt token for an account to a listing
@@ -25,22 +26,43 @@ import mainfiles.utility.UserUtil;
 @AllArgsConstructor
 public class ListingController {
 
+    // fields are injected into spring context using constructor injection
     private final ListingService listingService;
     private final UserUtil userUtil;
     private final UserRepository userRepository;
 
+
+    // Create Listing api
     @PostMapping
-    public ResponseEntity<ListingDTO> createListing(@RequestBody ListingDTO listingDTO) {
-        ListingDTO createdListing = listingService.createListing(listingDTO);
-        return new ResponseEntity<>(createdListing, HttpStatus.CREATED);
+    // responseentity returns HTTP response, response contains type ListingDTO
+    public ResponseEntity<ListingDTO> createListing(
+            //ModelAttribute binds listingDTO parameter to data from object
+            @ModelAttribute ListingDTO listingDTO,
+            // requestparam is used here to bind "images" to images variable
+            // MultiPartFile[] is an array of objects representing uploaded image files
+            @RequestParam("images") MultipartFile[] images) {
+        try {
+
+            // call createlisting impl in service class and store in createdListing
+            ListingDTO createdListing = listingService.createListing(listingDTO, images);
+
+            // return response (Example status 201 and the createdListing information)
+            return new ResponseEntity<>(createdListing, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
+
+    // Used in Item.jsx to get listing data by product id
     @GetMapping("/{id}")
     public ResponseEntity<ListingDTO> getListingById(@PathVariable Long id) {
         ListingDTO listing = listingService.getListingById(id);
         return new ResponseEntity<>(listing, HttpStatus.OK);
     }
 
+
+    // Get All Listings
     @GetMapping
     public ResponseEntity<List<ListingDTO>> getAllListings() {
         List<ListingDTO> listings = listingService.getAllListings();

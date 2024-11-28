@@ -31,7 +31,7 @@ public class ListingMapper {
         listing.setSubject(listingDTO.getSubject());
         listing.setAmount(listingDTO.getAmount());
         listing.setDescription(listingDTO.getDescription());
-        listing.setImages(listingDTO.getImages());
+        listing.setImages(listingDTO.getImageUrls());
         listing.setUser(user);
 
         return listing;
