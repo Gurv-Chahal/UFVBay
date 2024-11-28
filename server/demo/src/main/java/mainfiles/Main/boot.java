@@ -1,7 +1,6 @@
 package mainfiles.Main;
 
 
-import mainfiles.controller.AuthController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -26,3 +25,5 @@ public class boot {
 	}
 
 }
+
+//Random comment
