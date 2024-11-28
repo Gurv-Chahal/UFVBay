@@ -57,7 +57,9 @@ const UserListings = () => {
                             {/*call product cards component and pass props*/}
                             <ProductCards
                                 price={`CA ${product.amount || product.price}`}
-                                image={(product.images && product.images[0]) || product.image}
+                                image={ (product.imageUrls && product.imageUrls[0]) ||
+                                    (product.images && product.images[0]) ||
+                                    product.image}
                                 name={product.title || product.name}
                                 author={product.author}
                             />

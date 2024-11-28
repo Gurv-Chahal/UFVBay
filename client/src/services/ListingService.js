@@ -8,6 +8,7 @@ import { getToken } from "./AuthService.js";
 const BASE_REST_API_URL = 'http://localhost:8080';
 
 
+// interceptor modifies the request before it is sent to the server
 axios.interceptors.request.use(
     function (config) {
 
@@ -27,35 +28,26 @@ axios.interceptors.request.use(
     }
 );
 
-// may delete some of these rest apis later if we dont need them
 
 
-// Function to get all listings
+// Function to get all listings - used in Home.jsx to show all listings
 export function getAllListings() {
     return axios.get(`${BASE_REST_API_URL}/api/listings`);
 }
 
-// Function to add a new listing - listing object is where the JSON is held
-export function addListing(listing) {
-    return axios.post(`${BASE_REST_API_URL}/api/listings`, listing);
-}
 
-// Function to get user-specific listings
+// Function to get user-specific listings - used in UserListings.jsx to show specific user listings on profiel
 export function getUserListings() {
     return axios.get(`${BASE_REST_API_URL}/api/listings/user`);
 }
 
-// Function to get a listing by ID
-export function getListingById(id) {
-    return axios.get(`${BASE_REST_API_URL}/api/listings/${id}`);
-}
 
-// Function to update a listing
+// Function to update a listing - still need to implement
 export function updateListing(id, listing) {
     return axios.put(`${BASE_REST_API_URL}/api/listings/${id}`, listing);
 }
 
-// Function to delete a listing
+// Function to delete a listing - still need to implement
 export function deleteListing(id) {
     return axios.delete(`${BASE_REST_API_URL}/api/listings/${id}`);
 }

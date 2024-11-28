@@ -1,6 +1,11 @@
 import axios from "Axios";
 import { jwtDecode } from "jwt-decode";
 
+
+
+
+
+// login api call
 export const loginAPICall = (usernameOrEmail, password) => {
   return axios.post("http://localhost:8080/auth/login", {
     usernameOrEmail,
@@ -8,26 +13,40 @@ export const loginAPICall = (usernameOrEmail, password) => {
   });
 };
 
+
+// register api call
 export const registerAPICall = (userData) => {
   return axios.post("http://localhost:8080/auth/register", userData);
 };
 
-// -----------
-// tokens are so that we can store user login and when they reopen browser they auto login
 
-// create token
+
+
+
+
+
+// Stores a JWT token in the browsers localstorage - (token) holds JWT String
 export const storeToken = (token) => {
   console.log('Storing token:', token);
+
+  // setItem stores the token with "token" as the key and token variable as value
   return localStorage.setItem("token", token);
 };
 
+// retrieves the JWT token from localstorage
 export const getToken = () => {
+
+  // getItem retrieves value stored in the "token" key, then it is stored in token variable
   const token = localStorage.getItem("token");
   console.log('Retrieved token from localStorage:', token);
   return token;
 };
 
+
+// fetches authenticated users information from backend using JWT token
 export const getUserInfo = async () => {
+
+  // retrives the JWT token from localstorage
   const token = getToken();
   console.log("Token:", token);
 
@@ -37,16 +56,27 @@ export const getUserInfo = async () => {
 
   try {
 
+    // send api request to backend "userinfo" endpoint
     const response = await axios.get(`http://localhost:8080/api/listings/userinfo`, {
+      // Authorization header and "Bearer token" is sent to the backend so the user can be authenticated before the info is sent back
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    return response.data; // This should contain the user's name and email
+    // now that the user has been authenticated this will contain users info
+    return response.data;
+
   } catch (error) {
     console.error("error fetching user info from backend:", error);
     return null;
   }
 };
+
+
+
+
+
+
+
 
 
 // ---------
@@ -71,11 +101,6 @@ export const isUserLoggedIn = () => {
   }
 };
 
-// retrieves username of logged in user allowing app to access user specific data
-export const getLoggedInUser = () => {
-  const username = sessionStorage.getItem("authenticatedUser");
-  return username;
-};
 
 // logout - clear storage and reload page
 export const logout = () => {

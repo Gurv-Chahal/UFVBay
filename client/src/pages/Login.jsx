@@ -16,20 +16,27 @@ const Auth = () => {
   // made it async so that it waits for login api call to finish to make sure everything
   // runs in correct order
     async function handlelogin() {
+        // loginAPICall function sends api request to auth/login endpoint in backend
         await loginAPICall(username, password)
             .then((response) => {
 
                 // extract JWT token
                 let token = response.data.accessToken;
 
-                // had to do this weird solution because I kept getting error with bearer token not correctly passing
+                // had to do this weird solution because I kept getting error with bearer token not correctly passing ->
+
                 // remove 'Bearer ' from front if it exists
                 token = token.replace(/^Bearer\s+/i, '');
                 // remove all whitespace characters
                 token = token.replace(/\s+/g, '');
 
+                // store token in browser localstorage
                 storeToken(token);
+
+                // store user info in sessionstorage to save the authenticated user state during current session
                 saveLoggedInUser(username);
+
+                // go back to home page
                 navigator("/");
             })
             .catch((error) => {
