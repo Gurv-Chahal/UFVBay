@@ -10,6 +10,9 @@ import mainfiles.repository.ListingRepository;
 import mainfiles.repository.UserRepository;
 import mainfiles.service.ListingService;
 import mainfiles.utility.UserUtil;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -32,7 +35,7 @@ public class ListingServiceImpl implements ListingService {
     private final Cloudinary cloudinary;
 
 
-    // Create Listing implementation
+    // 1. Create Listing implementation
     @Override
     public ListingDTO createListing(ListingDTO listingDTO, MultipartFile[] images) throws Exception {
 
@@ -84,27 +87,48 @@ public class ListingServiceImpl implements ListingService {
 
 
     @Override
+    // 2. Get a specific listing using listing id
     public ListingDTO getListingById(Long id) {
+        // using jpa repo method, query database to find listing with specific id
         Listing listing = listingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Listing not found with id: " + id));
 
+        // return that listing but first map to DTO
         return ListingMapper.mapToCreateListingDTO(listing);
     }
 
     @Override
+    // 3. method will return a list of ListingDTO objects
     public List<ListingDTO> getAllListings() {
+
+        // holds a list of Listing objects which is equal to findall which retrieves all records
+        // of listings from the listing table in database
         List<Listing> listings = listingRepository.findAll();
 
-        return listings.stream()
-                .map(ListingMapper::mapToCreateListingDTO)
-                .collect(Collectors.toList());
+        List<ListingDTO> listingDTOs = new ArrayList<>();
+
+        // iterate over listings
+        for (Listing listing : listings) {
+            // map each listing into dto
+            ListingDTO dto = ListingMapper.mapToCreateListingDTO(listing);
+            // add each listing to arraylist
+            listingDTOs.add(dto);
+        }
+
+        // return arraylist of listings
+        return listingDTOs;
     }
 
     @Override
+    // 4. update a specific listing
     public ListingDTO updateListing(Long id, ListingDTO listingDTO) {
+
+        // find listing by querying database using findById to find specific lsting
         Listing existingListing = listingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Listing not found with id: " + id));
 
+
+        // use setter methods to change anything about the listing
         existingListing.setTitle(listingDTO.getTitle());
         existingListing.setSubject(listingDTO.getSubject());
         existingListing.setAmount(listingDTO.getAmount());
@@ -112,26 +136,48 @@ public class ListingServiceImpl implements ListingService {
         existingListing.setImages(listingDTO.getImageUrls());
 
 
+        // save the updated listing to the database
         Listing updatedListing = listingRepository.save(existingListing);
 
+        // return the updated listing as DTO so it can be returned to client
         return ListingMapper.mapToCreateListingDTO(updatedListing);
     }
 
+
+    // 5. delete listing implementation
     @Override
     public void deleteListing(Long id) {
+
+        // retrieves listing object from database using id
         Listing listing = listingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Listing not found with id: " + id));
 
+        // remove listing from database
         listingRepository.delete(listing);
     }
 
 
     @Override
+    // 6. get listing by user id
     public List<ListingDTO> getListingsByUserId(Long userId) {
+
+        // query database through user id to find listings and put them into List
         List<Listing> listings = listingRepository.findByUserId(userId);
-        return listings.stream()
-                .map(ListingMapper::mapToCreateListingDTO)
-                .collect(Collectors.toList());
+
+        List<ListingDTO> listingDTOs = new ArrayList<>();
+
+        // iterate through each listing in the list
+        for (Listing listing : listings) {
+
+            // map into dto
+            ListingDTO dto = ListingMapper.mapToCreateListingDTO(listing);
+
+            // add to new arraylist
+            listingDTOs.add(dto);
+        }
+
+        // return arraylist of listings with them converting to DTO
+        return listingDTOs;
     }
 
 }

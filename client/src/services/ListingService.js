@@ -47,7 +47,4 @@ export function updateListing(id, listing) {
     return axios.put(`${BASE_REST_API_URL}/api/listings/${id}`, listing);
 }
 
-// Function to delete a listing - still need to implement
-export function deleteListing(id) {
-    return axios.delete(`${BASE_REST_API_URL}/api/listings/${id}`);
-}
+

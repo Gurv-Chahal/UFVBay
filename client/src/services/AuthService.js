@@ -2,7 +2,7 @@ import axios from "Axios";
 import { jwtDecode } from "jwt-decode";
 
 
-
+// Random commment
 
 
 // login api call
@@ -11,6 +11,11 @@ export const loginAPICall = (usernameOrEmail, password) => {
     usernameOrEmail,
     password,
   });
+};
+
+// Store user ID
+export const storeUserId = (userId) => {
+  localStorage.setItem("userId", userId);
 };
 
 

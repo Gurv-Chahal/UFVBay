@@ -6,7 +6,9 @@ import {
   loginAPICall,
   saveLoggedInUser,
   storeToken,
+  storeUserId,
 } from "../services/AuthService.js";
+
 
 const Auth = () => {
   const [username, setUsername] = useState("");
@@ -20,8 +22,10 @@ const Auth = () => {
         await loginAPICall(username, password)
             .then((response) => {
 
-                // extract JWT token
+                // save JWT token
                 let token = response.data.accessToken;
+                // save user id
+                let userId = response.data.userId;
 
                 // had to do this weird solution because I kept getting error with bearer token not correctly passing ->
 
@@ -32,6 +36,9 @@ const Auth = () => {
 
                 // store token in browser localstorage
                 storeToken(token);
+
+                // store userId in localStorage
+                storeUserId(userId);
 
                 // store user info in sessionstorage to save the authenticated user state during current session
                 saveLoggedInUser(username);

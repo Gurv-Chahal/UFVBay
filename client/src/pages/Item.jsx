@@ -3,16 +3,20 @@ import "../public/Item.css";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import Map from "../components/Map.jsx";
-import { useParams } from "react-router-dom";
-import axios from "Axios"; // Corrected import statement
+import {useNavigate, useParams} from "react-router-dom";
+import axios from "Axios";
 
 const Item = () => {
-    const { productId } = useParams(); // Using 'productId' from route parameters
+    const { productId } = useParams();
     const [listing, setListing] = useState(null);
     const [count, setCount] = useState(0);
     const [slider, setSlider] = useState(null);
-    const [loading, setLoading] = useState(true); // For handling loading state
-    const [error, setError] = useState(null); // For handling errors
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [isOwner, setIsOwner] = useState(false);
+
+    const navigate = useNavigate();
+
 
     useEffect(() => {
 
@@ -43,6 +47,14 @@ const Item = () => {
                     setSlider(listingData.imageUrls[0]);
                 }
 
+                // Get the current user ID from localStorage
+                const currentUserId = localStorage.getItem('userId');
+
+                // Compare the listing's owner ID with the current user ID
+                if (listingData.userId && currentUserId && listingData.userId.toString() === currentUserId.toString()) {
+                    setIsOwner(true);
+                }
+
                 // indicate fetching data is finished
                 setLoading(false);
             } catch (err) {
@@ -57,6 +69,38 @@ const Item = () => {
 
         // dependency array holds productId so that the effect runs once and then every time productId changes
     }, [productId]);
+
+
+    const handleDeleteListing = async () => {
+
+        // create pop up window when delete button is clicked which then confirms or denies the request giving if statement true or false boolean
+        if (window.confirm("Are you sure you want to delete this listing?")) {
+            try {
+
+                //retrieve JWT token
+                const token = localStorage.getItem('token');
+
+                // sent api delete request to backend, also send authorization header and jwt token to confirm user identity
+                await axios.delete(`http://localhost:8080/api/listings/${productId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                // pop up
+                alert('Listing deleted successfully');
+
+                // Redirect to home page
+                navigate('/');
+
+            } catch (err) {
+                console.error('Error deleting listing:', err.response || err);
+                alert('Failed to delete listing');
+            }
+        }
+    };
+
+
 
 
     // Handles the logic for going to the next image on Item page
@@ -204,6 +248,25 @@ const Item = () => {
                     >
                         Contact Seller
                     </button>
+
+
+                    {/* Delete Listing Button conditionally renders only if the account is the owner of the listing*/}
+                    {isOwner && (
+                        <button
+                            className="my-2"
+                            style={{
+                                height: "40px",
+                                width: "100%",
+                                backgroundColor: "#ff3b30",
+                                borderColor: "#ff3b30",
+                                border: "3px solid #ff3b30",
+                                color: "#fff",
+                            }}
+                            onClick={handleDeleteListing}
+                        >
+                            Delete Listing
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
