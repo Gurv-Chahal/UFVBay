@@ -2,7 +2,10 @@ package mainfiles.controller;
 
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import mainfiles.entity.User;
+import mainfiles.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -27,8 +30,9 @@ allowing rest apis to function
 @RequestMapping("/auth")
 public class AuthController {
 
-  // reference variable to interface, can reference an object of any class that implements AuthService interface
+  // fields are injected into spring context using contructor injection
   private AuthService authservice;
+  private UserRepository userRepository;
 
   /* 1. Build Register RESTAPI
    method is of type ResponseEntity which is a class provided by spring that represents
@@ -53,17 +57,28 @@ public class AuthController {
 
   // 2. Build Login RESTAPI
   @PostMapping("/login")
-  // @RequestBody binds incoming data to java object (typically in JSON)
   public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDTO loginDTO) {
 
+      // authenticate user and generate JWT token
       String token = authservice.login(loginDTO);
 
-      // jwt code
-      JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
-      jwtAuthResponse.setAccessToken(token);
+      // Retrieve the user details
+      User user = userRepository.findByUsernameOrEmail(
+              loginDTO.getUsernameOrEmail(),
+              loginDTO.getUsernameOrEmail()
+      ).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+      // Create JWT Auth Response creates an object containing jwt token and user id
+      JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+
+      // assign JWT token to accesstoken field
+      jwtAuthResponse.setAccessToken(token);
+      // assigns users ID to userId field
+      jwtAuthResponse.setUserId(user.getId());
+
+      // returns user id and jwt token
       return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
-      
   }
+
 
 }

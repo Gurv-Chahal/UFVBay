@@ -26,9 +26,13 @@ const Signup = () => {
         email: email,
         password: savedPassword,
       };
+
+      // send api call to backend endpoint auth/register, and send the userData object in the parameter
+      // now the user will be registered in the backend and stored in database
       registerAPICall(userData)
         .then((response) => {
           console.log(response.status, response.data.token);
+          // now navigate to login page
           navigate("/login");
         })
         .catch((error) => {

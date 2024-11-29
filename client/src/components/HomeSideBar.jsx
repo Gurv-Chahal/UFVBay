@@ -92,15 +92,15 @@ const HomeSideBar = ({ onSubjectChange }) => {
           <SubjectMenu onSubjectClick={(subject) => onSubjectChange(subject)} />
         </div>
 
-        <button className="btn my-2 py-3 d-flex align-items-center text-start gradient-button">
-          <i className="bi bi-bookmark px-3" style={{ fontSize: "30px" }} />
-          Saved Listings
-        </button>
+        {/*<button className="btn my-2 py-3 d-flex align-items-center text-start gradient-button">*/}
+        {/*  <i className="bi bi-bookmark px-3" style={{ fontSize: "30px" }} />*/}
+        {/*  Saved Listings*/}
+        {/*</button>*/}
 
-        <button className="btn my-2 py-3 d-flex align-items-center text-start gradient-button">
-          <i className="bi bi-bell px-3" style={{ fontSize: "30px" }} />
-          Notifications
-        </button>
+        {/*<button className="btn my-2 py-3 d-flex align-items-center text-start gradient-button">*/}
+        {/*  <i className="bi bi-bell px-3" style={{ fontSize: "30px" }} />*/}
+        {/*  Notifications*/}
+        {/*</button>*/}
 
         {/*if isAuth is false then show login button, if its true then show log out button.
            also using onClick if user clicks logout then logout() method will handle it*/}

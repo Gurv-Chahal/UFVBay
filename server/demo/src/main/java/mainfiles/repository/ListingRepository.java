@@ -1,8 +1,10 @@
 package mainfiles.repository;
 
-import mainfiles.Entity.Books;
+import mainfiles.entity.Listing;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /*
     For explanation on how JpaRepository works look at UserRepository class comments.
@@ -10,5 +12,8 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface BooksRepository extends JpaRepository<Books, Long> {
+public interface ListingRepository extends JpaRepository<Listing, Long> {
+
+    List<Listing> findByUserId(Long userId);
+
 }

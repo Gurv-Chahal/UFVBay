@@ -10,13 +10,24 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import mainfiles.repository.UserRepository;
+import mainfiles.entity.User;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-// Need @Configuration annotation to indicate to spring that the class provides configuration for security settings
+import java.util.Arrays;
+
+// Need @Configuration annotation to inject bean into spring context so that spring can take care of class
 @Configuration
 public class SpringSecurityConfig {
 
@@ -26,7 +37,7 @@ public class SpringSecurityConfig {
     private JwtAEP authEntryPoint;
     private JwtAuthFilter authFilter;
 
-    // contructor
+    // contructor used to inject beans from fields
     public SpringSecurityConfig(CustomUserDetailsService userDetailsService,
                                 JwtAEP authEntryPoint, JwtAuthFilter authFilter) {
         this.userDetailsService = userDetailsService;
@@ -52,7 +63,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
 
-        http.csrf().disable()
+        http.cors().and().csrf().disable()
 
                 // this method configures authorization for HTTP requests
                 // lambda expression is appropriate here, it takes a parameter called authorize (type is inferred)
@@ -69,17 +80,9 @@ public class SpringSecurityConfig {
                     authorize.anyRequest().authenticated();
                 })
 
-                // this gives the user information like username and email which was obtained in the
-                // CustomUserDetailsService class so that it can be used for login authentication
-                .userDetailsService(userDetailsService)
-
-                // enable http basic authentication which prompts user for username/password pop up
-                .httpBasic(Customizer.withDefaults());
-
-        http.exceptionHandling((exception) -> exception
-                .authenticationEntryPoint(authEntryPoint));
-
-        http.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+                .exceptionHandling((exception) -> exception
+                .authenticationEntryPoint(authEntryPoint))
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -93,6 +96,30 @@ public class SpringSecurityConfig {
 
         // creates and provides authenticationmanager which allows spring to perform authentication operations
         return configuration.getAuthenticationManager();
+    }
+
+
+
+
+    // had to create this to stop CORS error in terminal
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // allow access to localhost:3000
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        // allow get, post, put, etc apis through cors
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        // allow any header like Authorization
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
+
+        // allow every endpoint through CORS
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 
 

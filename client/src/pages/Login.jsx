@@ -6,7 +6,9 @@ import {
   loginAPICall,
   saveLoggedInUser,
   storeToken,
+  storeUserId,
 } from "../services/AuthService.js";
+
 
 const Auth = () => {
   const [username, setUsername] = useState("");
@@ -15,29 +17,46 @@ const Auth = () => {
 
   // made it async so that it waits for login api call to finish to make sure everything
   // runs in correct order
-  async function handlelogin() {
-    await loginAPICall(username, password)
-      .then((response) => {
-        console.log(response.data);
+    async function handlelogin() {
+        // loginAPICall function sends api request to auth/login endpoint in backend
+        await loginAPICall(username, password)
+            .then((response) => {
 
-        // basic authentication token used to authenticate users using username password
-        // even if the browser gets closed and reopened. In this case its just storing the token
-        const token = "Basic" + window.btoa(username + ":" + password);
-        storeToken(token);
+                // save JWT token
+                let token = response.data.accessToken;
+                // save user id
+                let userId = response.data.userId;
 
-        saveLoggedInUser(username);
+                // had to do this weird solution because I kept getting error with bearer token not correctly passing ->
 
-        navigator("/");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+                // remove 'Bearer ' from front if it exists
+                token = token.replace(/^Bearer\s+/i, '');
+                // remove all whitespace characters
+                token = token.replace(/\s+/g, '');
+
+                // store token in browser localstorage
+                storeToken(token);
+
+                // store userId in localStorage
+                storeUserId(userId);
+
+                // store user info in sessionstorage to save the authenticated user state during current session
+                saveLoggedInUser(username);
+
+                // go back to home page
+                navigator("/");
+            })
+            .catch((error) => {
+                console.log('Login error:', error);
+            });
+    }
+
+
 
   return (
     <div className="w-full h-screen d-flex align-items-center justify-content-center">
       <div className="row w-100 vh-100">
-        {/*Log In half of auth page */}
+        {/*logIn half of auth page */}
         <div className="col-6 border d-flex flex-column justify-content-center">
           <h1 className="text-center" style={{ fontSize: "4rem" }}>
             Sign In

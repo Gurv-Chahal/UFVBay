@@ -2,7 +2,7 @@ package mainfiles.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
-import mainfiles.Entity.*;
+import mainfiles.entity.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

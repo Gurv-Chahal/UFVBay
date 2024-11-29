@@ -25,7 +25,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
 
 
-    // constructor
+    // bean constructor injection
     public JwtAuthFilter(JwtToken jwtToken, UserDetailsService userDetailsService) {
         this.jwtToken = jwtToken;
         this.userDetailsService = userDetailsService;
@@ -35,11 +35,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // Get JWT token from HTTP request
+        // get JWT token from HTTP request
         String token  = getTokenFromRequest(request);
 
-        // Validate JWT token
+        // validate JWT token
         if (StringUtils.hasText(token) && jwtToken.validateToken(token)) {
+
             // get username from token
             String username = jwtToken.getUsername(token);
 
