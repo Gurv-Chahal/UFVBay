@@ -10,19 +10,8 @@ import testData from "../public/testData.jsx";
 const Home = () => {
   const [selectedSubject, setSelectedSubject] = useState("");
   const [listings, setListings] = useState([]);
-  const [filteredItems, setFilteredItems] = useState(testData);
+  const [filteredItems, setFilteredItems] = useState("");
   const [searchQuery, setsearchQuery] = useState("");
-
-  const handleSearch = (query) => {
-    const lowerCaseQuery = query.toLowerCase();
-    const results = testData.filter((item) => {
-      return (
-        item.name.toLowerCase().includes(lowerCaseQuery) ||
-        item.description.toLowerCase().includes(lowerCaseQuery)
-      );
-    });
-    setFilteredItems(results);
-  };
 
   const handleSubjectChange = (subject) => {
     setSelectedSubject(subject === "ALL" ? "" : subject);
@@ -32,13 +21,25 @@ const Home = () => {
     fetchListings();
   }, []);
 
+  const handleSearch = (query) => {
+    const lowerCaseQuery = query.toLowerCase();
+    const results = listings.filter((item) => {
+      return (
+        item.title.toLowerCase().includes(lowerCaseQuery) ||
+        item.description.toLowerCase().includes(lowerCaseQuery)
+      );
+    });
+    setFilteredItems(results);
+  };
+
   const fetchListings = () => {
     // calls getAllListings function which sends an api call to backend endpoint
     getAllListings()
       .then((response) => {
         // combine testData with fetched listings by using spread operator
-        const combinedListings = [...testData, ...response.data];
+        const combinedListings = [...response.data];
         setListings(combinedListings);
+        console.log(combinedListings);
       })
       .catch((error) => {
         console.error("Error fetching listings:", error);
@@ -52,7 +53,7 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar />
+      <Navbar onSearch={handleSearch} results={filteredItems} />
       <div className="d-flex">
         <HomeSideBar onSubjectChange={handleSubjectChange} />
         <div className="ms-auto col-10 col-md-10">
