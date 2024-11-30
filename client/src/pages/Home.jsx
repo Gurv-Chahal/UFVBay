@@ -43,7 +43,6 @@ const Home = () => {
       })
       .catch((error) => {
         console.error("Error fetching listings:", error);
-        setListings(testData);
       });
   };
 

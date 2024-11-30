@@ -16,6 +16,7 @@ const Map = ({ position, setPosition }) => {
     useMapEvents({
       click: (e) => {
         setPosition([e.latlng.lat, e.latlng.lng]); // Set position state to the clicked coordinates on map
+        console.log(position[0]);
       },
     });
     return null;

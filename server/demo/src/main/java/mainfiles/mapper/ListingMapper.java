@@ -18,7 +18,9 @@ public class ListingMapper {
                 listing.getAmount(),
                 listing.getDescription(),
                 listing.getUser().getId(),
-                listing.getImages()
+                listing.getImages(),
+                listing.getLongitude(),
+                listing.getLatitude()
 
         );
     }
@@ -32,6 +34,8 @@ public class ListingMapper {
         listing.setAmount(listingDTO.getAmount());
         listing.setDescription(listingDTO.getDescription());
         listing.setImages(listingDTO.getImageUrls());
+        listing.setLongitude(listingDTO.getLongitude());
+        listing.setLatitude(listingDTO.getLatitude());
         listing.setUser(user);
 
         return listing;

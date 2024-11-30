@@ -44,8 +44,10 @@ public class User {
   @Column(nullable = false)
   private String password;
 
+
+
   // One to Many relationship with Listing
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Listing> listings = new ArrayList<>();
+  private List<mainfiles.entity.Listing> listings = new ArrayList<>();
 
 }
