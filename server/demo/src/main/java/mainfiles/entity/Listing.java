@@ -1,9 +1,22 @@
 package mainfiles.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.List;
+
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -27,6 +40,14 @@ public class Listing {
     private float amount;
 
     private String description;
+
+    @Column(nullable = true)
+    private Float longitude;
+
+    @Column(nullable=true)
+    private Float latitude;
+
+   
 
     // element collection specifies image urls to be stored in a different table
     @ElementCollection

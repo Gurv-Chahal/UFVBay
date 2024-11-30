@@ -1,12 +1,12 @@
 package mainfiles.dto;
 
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 /*
 DTO class for listing information in database to make sure the information in database isn't directly accessed
@@ -26,4 +26,6 @@ public class ListingDTO {
     private Long userId;
     // added this List of type string to hold image urls obtained from cloudinary
     private List<String> imageUrls;
+    private Float longitude;
+    private Float latitude;
 }
