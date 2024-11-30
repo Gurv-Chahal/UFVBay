@@ -43,7 +43,7 @@ const Map = ({ position, setPosition }) => {
       {/* Conditionally renders MapClickHnadler function only on the create-listing page */}
       {location.pathname === "/create-listing" && <MapClickHandler />}
 
-      {position && (
+      {location.pathname.startsWith("/create-listing") && position && (
         <Marker position={position}>
           <Popup>You want to meet here</Popup>
         </Marker>
