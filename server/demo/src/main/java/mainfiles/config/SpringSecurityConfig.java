@@ -58,31 +58,16 @@ public class SpringSecurityConfig {
 
 
     @Bean
-    // SecurityFilterChain is a part of Spring Security dependency, it creates security filters to incoming
-    // http requests. HttpSecurity allows customization of security behaviour of Http requests.
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-
-        http.cors().and().csrf().disable()
-
-                // this method configures authorization for HTTP requests
-                // lambda expression is appropriate here, it takes a parameter called authorize (type is inferred)
-                .authorizeHttpRequests((authorize) -> {
-
-                    // permit all that are registering. They do not need authorization
-                    authorize.requestMatchers("/auth/register", "/auth/login").permitAll();
-
-                    // permit all OPTIONS requests, this essentially stops CORS errors.
-                    authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
-
-
-                    // require authentication for any user trying to access endpoints
-                    authorize.anyRequest().authenticated();
-                })
-
-                .exceptionHandling((exception) -> exception
-                .authenticationEntryPoint(authEntryPoint))
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/ws/**").permitAll() // Permit WebSocket endpoints
+                        .requestMatchers("/auth/**").permitAll() // Permit authentication endpoints
+                        .anyRequest().authenticated() // Secure other endpoints
+                )
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(Customizer.withDefaults());
 
         return http.build();
     }
