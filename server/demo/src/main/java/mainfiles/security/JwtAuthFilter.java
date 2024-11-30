@@ -15,17 +15,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-// abstract class ensures filter is executed once per request
-// validate jwt token and provide user details to spring security for authentication
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    // private fields
-    private JwtToken jwtToken;
-    private UserDetailsService userDetailsService;
+    private final JwtToken jwtToken;
+    private final UserDetailsService userDetailsService;
 
-
-    // bean constructor injection
     public JwtAuthFilter(JwtToken jwtToken, UserDetailsService userDetailsService) {
         this.jwtToken = jwtToken;
         this.userDetailsService = userDetailsService;
@@ -35,40 +30,49 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // get JWT token from HTTP request
+        String path = request.getRequestURI();
+
+        // Bypass JWT processing for /auth/** endpoints
+        if (path.startsWith("/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token  = getTokenFromRequest(request);
+        System.out.println("Processing token: " + token);
 
-        // validate JWT token
-        if (StringUtils.hasText(token) && jwtToken.validateToken(token)) {
+        if (StringUtils.hasText(token)) {
+            try {
+                if (jwtToken.validateToken(token)) {
+                    String username = jwtToken.getUsername(token);
+                    System.out.println("Valid token for user: " + username);
 
-            // get username from token
-            String username = jwtToken.getUsername(token);
-
-            // load user associated with token
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities()
-            );
-
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                    );
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                } else {
+                    System.out.println("Invalid token.");
+                }
+            } catch (Exception e) {
+                System.out.println("Token validation error: " + e.getMessage());
+            }
+        } else {
+            System.out.println("No token found in request.");
         }
 
         filterChain.doFilter(request, response);
-
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
 
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
+            return bearerToken.substring(7);
         }
 
         return null;
     }
-
-
 }

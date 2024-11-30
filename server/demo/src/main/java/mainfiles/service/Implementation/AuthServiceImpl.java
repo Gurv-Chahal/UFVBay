@@ -83,6 +83,10 @@ public class AuthServiceImpl implements AuthService {
     // 2. insert or update the record in the users table in the database based on the properties of the user object
     userRepository.save(user);
 
+    // In register method
+    System.out.println("Registering user: " + registerDTO.getUsername() + ", Email: " + registerDTO.getEmail());
+
+
 
     return "User registered sucessfully";
   }
@@ -104,8 +108,11 @@ public class AuthServiceImpl implements AuthService {
     getContext() retrieves the context, and setAuthentication(authentication) saves the user's authentication info. */
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    // generate JWT token
+    // JWT code
     String token = jwtToken.generateToken(authentication);
+
+
+
     
 
     return token;

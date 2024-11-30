@@ -134,6 +134,9 @@ public class ListingServiceImpl implements ListingService {
         existingListing.setAmount(listingDTO.getAmount());
         existingListing.setDescription(listingDTO.getDescription());
         existingListing.setImages(listingDTO.getImageUrls());
+        existingListing.setLatitude(listingDTO.getLongitude());
+        existingListing.setLatitude(listingDTO.getLatitude());
+
 
 
         // save the updated listing to the database
