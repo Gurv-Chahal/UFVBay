@@ -162,7 +162,7 @@ const Navbar = ({ onSearch, results }) => {
                   left: "0",
                   width: "100%",
                   height: "100%",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  backgroundColor: "rgba(50, 50, 50, 0.9)", // Dark overlay
                   zIndex: "1050",
                   display: "flex",
                   alignItems: "center",
@@ -171,13 +171,11 @@ const Navbar = ({ onSearch, results }) => {
             >
               <div
                   style={{
-                    backgroundColor: "white",
-                    padding: "20px",
-                    borderRadius: "10px",
                     width: "80%",
                     height: "80%",
-                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
-                    overflow: "hidden",
+                    padding: "0",
+                    backgroundColor: "transparent",
+                    overflow: "auto",
                   }}
               >
                 <ChatRoom />
@@ -185,9 +183,9 @@ const Navbar = ({ onSearch, results }) => {
                     className="btn btn-danger"
                     style={{
                       position: "absolute",
-                      top: "10px",
-                      right: "10px",
-                      borderRadius: "50%",
+                      top: "3%",
+                      right: "1%",
+                      borderRadius: "100%",
                     }}
                     onClick={toggleChatRoom}
                 >
@@ -196,6 +194,7 @@ const Navbar = ({ onSearch, results }) => {
               </div>
             </div>
         )}
+
       </nav>
   );
 };

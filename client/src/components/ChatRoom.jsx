@@ -6,6 +6,8 @@ import "../public/index.css";
 
 const ChatRoom = () => {
 
+
+
     // organize private chats by user in a Map
     const [privateChats, setPrivateChats] = useState(new Map());
     // stores messages for public chats
