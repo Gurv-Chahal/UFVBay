@@ -34,6 +34,11 @@ const ChatRoom = () => {
     const [filteredUsers, setFilteredUsers] = useState([]);
 
 
+    const [userPage, setUserPage] = useState(0); // Current page of users
+    const [hasMoreUsers, setHasMoreUsers] = useState(true); // Whether there are more users to load
+
+
+
     // key to force rerenders
     const [componentKey, setComponentKey] = useState(0);
 
@@ -54,6 +59,8 @@ const ChatRoom = () => {
             }
         };
     }, []);
+
+
 
 
     // retrieve user info, intialize websocket, and fetch list of users
@@ -79,24 +86,40 @@ const ChatRoom = () => {
     };
 
 
-    const fetchUsers = async () => {
+    const fetchUsers = async (isLoadMore = false) => {
         try {
-            const response = await fetch("http://localhost:8080/api/users", {
+
+            const response = await fetch(`http://localhost:8080/api/users?page=${userPage}&size=20`, {
                 headers: { Authorization: `Bearer ${getToken()}` },
             });
+
             if (!response.ok) {
                 throw new Error(`Error: ${response.status} ${response.statusText}`);
             }
+
             const data = await response.json();
-            setUsers(data);
-            // initalize filtered users with full list for search box
-            setFilteredUsers(data);
-            console.log("Fetched users:", data);
+
+            if (data.length === 0) {
+                return;
+            }
+
+            const updatedUsers = isLoadMore ? [...users, ...data] : data;
+
+            setUsers(updatedUsers);
+            setFilteredUsers(updatedUsers); // Ensure filteredUsers matches users
         } catch (error) {
             console.error("Error fetching users:", error);
             alert("Failed to load users. Please try again.");
         }
     };
+
+
+
+    useEffect(() => {
+        // Sync filteredUsers with users when users array updates
+        setFilteredUsers(users);
+    }, [users]);
+
 
     // established websocket connection using sockjs and authenticates JWT token through URL
     const connect = (username) => {
@@ -195,6 +218,7 @@ const ChatRoom = () => {
         console.error("Error connecting to WebSocket:", err);
         alert("Failed to connect to the chat server. Please try again.");
     };
+
 
     const handleMessage = (event) => {
         const { value } = event.target;
@@ -318,6 +342,17 @@ const ChatRoom = () => {
     };
 
 
+    const handleUserListScroll = (e) => {
+        const { scrollTop, scrollHeight, clientHeight } = e.target;
+
+        // Check if we are at the bottom of the scroll and if there are more users to fetch
+        if (scrollTop + clientHeight >= scrollHeight - 10 && hasMoreUsers) {
+            // stop fetching users
+            fetchUsers(false);
+        }
+    };
+
+
     return (
         <div className="container">
             {userData.connected ? (
@@ -330,7 +365,8 @@ const ChatRoom = () => {
                             className="search-box"
                             onChange={(e) => handleSearch(e.target.value)}
                         />
-                        <div className="user-list">
+                        <div className="user-list" onScroll={handleUserListScroll}
+                             style={{maxHeight: "400px", overflowY: "auto"}}>
                             <ul>
                                 <li
                                     onClick={() => handleTabChange("CHATROOM")}
@@ -338,7 +374,6 @@ const ChatRoom = () => {
                                 >
                                     Chatroom
                                 </li>
-                                {/* Scrollable User List*/}
                                 {filteredUsers.map((user) => (
                                     <li
                                         key={user.username}
@@ -350,6 +385,7 @@ const ChatRoom = () => {
                                 ))}
                             </ul>
                         </div>
+
                     </div>
                     <div key={componentKey} className="chat-content">
                         <ul className="chat-messages">
