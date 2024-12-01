@@ -1,17 +1,25 @@
+// src/main/java/mainfiles/entity/Message.java
+
 package mainfiles.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
+// entity class for messages table in database
+
+@Entity
+@Table(name = "messages", indexes = {
+        @Index(columnList = "senderName"),
+        @Index(columnList = "receiverName"),
+        @Index(columnList = "timestamp")
+})
 @Getter
 @Setter
-@ToString
-@Entity
-@Table(name = "messages")
 public class Message {
 
     @Id
@@ -19,11 +27,25 @@ public class Message {
     private Long id;
 
     private String senderName;
+
     private String receiverName;
+
+    @Column(length = 1000)
     private String message;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
+    @CreatedDate
     private LocalDateTime timestamp;
+
+
+    // Constructors
+    public Message() {
+    }
+
+    public Message(String senderName, String receiverName, String message, LocalDateTime timestamp) {
+        this.senderName = senderName;
+        this.receiverName = receiverName;
+        this.message = message;
+        this.timestamp = timestamp;
+    }
+
 }
