@@ -20,7 +20,9 @@ public class ListingMapper {
                 listing.getUser().getId(),
                 listing.getImages(),
                 listing.getLongitude(),
-                listing.getLatitude()
+                listing.getLatitude(),
+                listing.getUser().getUsername()
+
 
         );
     }

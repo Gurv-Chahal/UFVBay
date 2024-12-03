@@ -24,8 +24,8 @@ public class ListingDTO {
     private Float amount;
     private String description;
     private Long userId;
-    // added this List of type string to hold image urls obtained from cloudinary
     private List<String> imageUrls;
     private Float longitude;
     private Float latitude;
+    private String username;
 }
