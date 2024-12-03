@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 // controller handles communication between websockets and front end api requests
@@ -130,26 +131,25 @@ public class ChatController {
 
 
 
-    // 5. fetches a paginated conversation history between the authenticated user1 and user2
+
     @GetMapping("/api/conversation/{user2}")
     @ResponseBody
-    public List<Message> getConversation(
-            // capture user2 paramater in query
-            @PathVariable String user2,
-
-            // set default number of messages in conversation history
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-
-        // retrieve authentication details
+    public List<Message> getConversation(@PathVariable String user2) {
+        // Retrieve authentication details
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // extract username
+        // Extract username of the authenticated user
         String user1 = authentication.getName();
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
-        // fetch messages between user1 and user2
-        Page<Message> conversation = messageService.getConversationBetweenUsers(user1, user2, pageable);
-        System.out.println("Fetched conversation between " + user1 + " and " + user2 + ": " + conversation.getContent().size() + " messages");
-        return conversation.getContent();
+        // Fetch all messages between user1 and user2 without pagination
+        List<Message> conversation = messageService.getFullConversationBetweenUsers(user1, user2);
+
+        System.out.println("Fetched full conversation between " + user1 + " and " + user2 + ": " + conversation.size() + " messages");
+
+        return conversation;
     }
+
+
+
+
+
 }

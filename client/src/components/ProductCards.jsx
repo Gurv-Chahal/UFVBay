@@ -8,10 +8,10 @@ function ProductCards(props) {
       <div className="card" style={{ width: "18rem" }}>
         {/* What to do with each attribute from the passed down object */}
         <img className="card-img-top" src={props.image} alt="Card image cap" />
-        <div className="card-body">
-          <h5 className="card-title">{props.price}</h5>
-          <p className="small-text ellipsis-text">{props.name}</p>
-        </div>
+          <div className="card-body">
+              <h5 className="small-text ellipsis-text">{props.name}</h5>
+              <p className="card-title">{props.price}</p>
+          </div>
       </div>
     </>
   );

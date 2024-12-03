@@ -8,9 +8,17 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  border-bottom: 2px solid green;
+  width: 80%;
+  text-align: center;
+  padding-bottom: 5px;
 }
 
 .card:hover,
 .small-text:hover {
-  text-decoration: underline;
+}
+
+
+.prodcards {
+  text-decoration: none;
 }

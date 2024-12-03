@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 const CreateListing = () => {
   const navigate = useNavigate();
 
-  // State variables
   const [position, setPosition] = useState(null);
   const [preview, setPreview] = useState([]);
   const [bookTitle, setBookTitle] = useState("");
@@ -41,7 +40,7 @@ const CreateListing = () => {
       return;
     }
 
-    // Create FormData object - which is an api that creates key value pairs
+    // create FormData object - which is an api that creates key value pairs
     const formData = new FormData();
 
     // add key value pairs to formdata object
@@ -62,7 +61,7 @@ const CreateListing = () => {
     }
 
     try {
-      // Get JWT token from localstorage using "token" key
+      // get JWT token from localstorage using "token" key
       const token = localStorage.getItem("token");
 
       // send axios api request to CreateListing endpoint in backend

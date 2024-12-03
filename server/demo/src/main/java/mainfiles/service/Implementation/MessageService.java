@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class MessageService {
@@ -66,4 +67,15 @@ public class MessageService {
     public Page<Message> getAllPublicMessages(Pageable pageable) {
         return messageRepository.findAllPublicMessages(pageable);
     }
+
+
+
+    public List<Message> getFullConversationBetweenUsers(String user1, String user2) {
+        // Call a query in the repository to fetch all messages exchanged between the two users
+        return messageRepository.findFullConversationBetweenUsers(user1, user2);
+    }
+
+
+
+
 }
