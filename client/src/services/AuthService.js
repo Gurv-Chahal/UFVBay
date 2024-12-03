@@ -38,6 +38,23 @@ export const registerAPICall = (userData) => {
   return authAxios.post("register", userData);
 };
 
+
+// sends api call to backend for edit profile button in account info
+export const updateUserInfo = async (updatedUser) => {
+  const token = getToken(); // Get JWT token from local storage
+  const response = await axios.put(
+      "http://localhost:8080/api/users/update",
+      updatedUser,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+  );
+  return response.data;
+};
+
 export const storeUserId = (userId) => {
   localStorage.setItem("userId", userId);
 };

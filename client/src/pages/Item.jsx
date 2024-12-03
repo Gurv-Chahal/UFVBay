@@ -6,7 +6,7 @@ import DisabledByDefaultIcon from "@mui/icons-material/DisabledByDefault";
 import Map from "../components/Map.jsx";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import axios from "Axios"; // Corrected import (lowercase 'a')
+import axios from "Axios";
 
 const Item = () => {
   const { productId } = useParams();
@@ -26,7 +26,6 @@ const Item = () => {
     description: "",
     longitude: "",
     latitude: "",
-    // Add other fields as necessary
   });
 
   const navigate = useNavigate();
@@ -52,6 +51,7 @@ const Item = () => {
         );
 
         // store data retrieved from backend into listingData variable
+        console.log("Listing data:", response.data);
         const listingData = response.data;
         setListing(listingData);
 
@@ -206,7 +206,7 @@ const Item = () => {
     });
   };
 
-  // handle the "X" button click to navigate back to home
+  // handle the X button click to navigate back to home
   const handleClose = () => {
     navigate("/");
   };
@@ -307,6 +307,12 @@ const Item = () => {
         <div className="my-2 mx-3">
           {/* Listing Title */}
           <h1 className="listtitle">{listing.title || "No Title"}</h1>
+
+          {/*Owner username*/}
+          <p className="listowner">
+            <strong>Posted By:</strong> {listing.username || "Unknown"}
+          </p>
+
           {/* Listing Price */}
           <div className="price-container">
             <h5 className="listprice">Listing Price:</h5>
@@ -314,34 +320,34 @@ const Item = () => {
           </div>
           <div className="my-5">
             <h5 className="b5">Meeting Spot 📍 </h5>
-            {/* Map Component */}
+            {/*Map Component */}
             {listing.latitude && listing.longitude ? (
-              <Map
-                position={{ lat: listing.latitude, lng: listing.longitude }}
-              />
+                <Map
+                    position={{lat: listing.latitude, lng: listing.longitude}}
+                />
             ) : (
-              <p>No meeting spot specified.</p>
+                <p>No meeting spot specified.</p>
             )}
 
             <div>
-              {/* "X" Button */}
+              {/* "X" Button*/}
               <button
-                onClick={handleClose}
-                style={{
-                  position: "absolute",
-                  top: "20px",
-                  left: "2%",
-                  borderRadius: "20%",
-                  background: "transparent",
-                  border: "none",
-                  color: "#fff",
-                  fontSize: "2.5rem",
-                  cursor: "pointer",
-                  zIndex: 5,
-                }}
-                aria-label="Close"
+                  onClick={handleClose}
+                  style={{
+                    position: "absolute",
+                    top: "20px",
+                    left: "2%",
+                    borderRadius: "20%",
+                    background: "transparent",
+                    border: "none",
+                    color: "#fff",
+                    fontSize: "2.5rem",
+                    cursor: "pointer",
+                    zIndex: 5,
+                  }}
+                  aria-label="Close"
               >
-                <DisabledByDefaultIcon fontSize="inherit" />
+                <DisabledByDefaultIcon fontSize="inherit"/>
               </button>
             </div>
           </div>
@@ -353,29 +359,29 @@ const Item = () => {
 
           {/* update Listing Button */}
           {isOwner && (
-            <button
-              className="btn btn-primary updatelisting"
-              onClick={handleUpdateClick}
-            >
-              Update Listing
-            </button>
+              <button
+                  className="btn btn-primary updatelisting"
+                  onClick={handleUpdateClick}
+              >
+                Update Listing
+              </button>
           )}
           {/* Delete Listing Button conditionally renders only if the account is the owner of the listing */}
           {isOwner && (
-            <button
-              className="my-2 btn btn-danger"
-              onClick={handleDeleteListing}
-            >
-              Delete Listing
-            </button>
+              <button
+                  className="my-2 btn btn-danger"
+                  onClick={handleDeleteListing}
+              >
+                Delete Listing
+              </button>
           )}
         </div>
       </div>
 
       {/* Update Form that opens after clicking button */}
       {isUpdating && (
-        <div className="update-form-overlay">
-          <div className="update-form-container">
+          <div className="update-form-overlay">
+            <div className="update-form-container">
             <h2 className="updateformlisting">Update Listing</h2>
             <form onSubmit={handleUpdateSubmit}>
               <div className="form-group">

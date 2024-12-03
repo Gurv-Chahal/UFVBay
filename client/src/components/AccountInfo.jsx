@@ -1,58 +1,148 @@
 import { useState, useEffect } from "react";
-import { getUserInfo } from "../services/AuthService.js";
+import { getUserInfo, updateUserInfo } from "../services/AuthService.js";
+import "../public/account.css";
 
 const AccountInfo = () => {
-
-    // state variable holding user information
+    // State variables
     const [user, setUser] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [updatedUser, setUpdatedUser] = useState({});
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-
-        // uses async because it needs to wait for data to be fetched by rest api
         const fetchUserInfo = async () => {
             try {
-
-                // calls to fetch user data using rest api, must also decode JWT token
                 const userInfo = await getUserInfo();
-                console.log("Fetched userInfo:", userInfo); // Add this line
-
-
-                // update user state variable with the fetched data
+                console.log("Fetched userInfo:", userInfo);
                 setUser(userInfo);
+                setUpdatedUser(userInfo);
             } catch (error) {
                 console.error("Error fetching user info:", error);
+                setError("Failed to fetch user information.");
             }
         };
-
-        // make call to fetch user data
         fetchUserInfo();
     }, []);
 
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setUpdatedUser((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
 
-    // if there is no user then return no user logged in
+    const handleEditClick = () => {
+        setIsEditing(true);
+    };
+
+    const handleCancelClick = () => {
+        setIsEditing(false);
+        setUpdatedUser(user);
+    };
+
+    const handleSaveClick = async () => {
+        try {
+            const updatedInfo = await updateUserInfo(updatedUser);
+            setUser(updatedInfo);
+            setIsEditing(false);
+            alert("Profile updated successfully!");
+        } catch (error) {
+            console.error("Error updating user info:", error);
+            setError("Failed to update user information.");
+        }
+    };
+
+
     if (!user) {
         return <div>No user is logged in.</div>;
     }
 
     return (
-        <div>
-            <h2>Account Information</h2>
+        <div className="account-container">
+            <header className="account-header">
+                <h1>Account Information</h1>
+            </header>
 
-            {/*display name or username if it exists*/}
-            <p>
-                <strong>Name:</strong> {user.name || user.username}
-            </p>
+            {error && <div className="error-message">{error}</div>}
 
-            {/*display email*/}
-            <p>
-                <strong>Email:</strong> {user.email}
-            </p>
+            {!isEditing ? (
+                <div>
+                    {/* account detials*/}
+                    <div className="account-details">
+                        <p>
+                            <strong>Name:</strong> {user.name || user.username}
+                        </p>
+                        <p>
+                            <strong>Email:</strong> {user.email}
+                        </p>
+                        <p>
+                            <strong>Username:</strong> {user.username}
+                        </p>
+                    </div>
 
-            {/*display email*/}
-            <p>
-                <strong>Username:</strong> {user.username}
-            </p>
+                    {/* nav buttons */}
+                    <div className="account-actions">
+                        <button className="btn btn-primary" onClick={handleEditClick}>
+                            Edit Profile
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <div>
+                    {/*edit Form */}
+                    <div className="account-details">
+                        <div className="form-group">
+                            <label htmlFor="name">
+                                <strong>Name:</strong>
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                value={updatedUser.name || ""}
+                                onChange={handleInputChange}
+                            />
+                        </div>
 
+                        <div className="form-group">
+                            <label htmlFor="email">
+                                <strong>Email:</strong>
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={updatedUser.email || ""}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="username">
+                                <strong>Username:</strong>
+                            </label>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                value={updatedUser.username || ""}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Butons */}
+                    <div className="account-actions">
+                        <button className="btn btn-primary" onClick={handleSaveClick}>
+                            Save
+                        </button>
+                        <button className="btn btn-secondary" onClick={handleCancelClick}>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
