@@ -36,7 +36,6 @@ const Home = () => {
     // calls getAllListings function which sends an api call to backend endpoint
     getAllListings()
       .then((response) => {
-        // combine testData with fetched listings by using spread operator
         const combinedListings = [...response.data];
         setListings(combinedListings);
         console.log(combinedListings);
@@ -58,7 +57,6 @@ const Home = () => {
         <div className="ms-auto col-10 col-md-10">
           <div className="m-5 py-5 d-flex flex-wrap">
             {filteredData.map((product) => {
-              // adjusted image selection to include imageUrls arraylist
               const image =
                 (product.imageUrls && product.imageUrls[0]) ||
                 (product.images && product.images[0]) ||
@@ -66,9 +64,9 @@ const Home = () => {
 
               return (
                 <div key={product.id} className="m-4">
-                  <Link to={`/item/${product.id}`}>
+                  <Link to={`/item/${product.id}`} className="prodcards">
                     <ProductCards
-                      price={`CA ${product.amount || product.price}`}
+                      price={`$ ${product.amount || product.price}`}
                       image={image}
                       name={product.title || product.name}
                       author={product.author}

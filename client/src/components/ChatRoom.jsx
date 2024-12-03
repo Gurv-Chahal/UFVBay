@@ -21,6 +21,10 @@ const ChatRoom = () => {
         message: "",
     });
 
+    const chatContentRef = useRef(null);
+    const messagesEndRef = useRef(null);
+
+
 
 
 
@@ -36,8 +40,9 @@ const ChatRoom = () => {
     const [filteredUsers, setFilteredUsers] = useState([]);
 
 
-    const [userPage, setUserPage] = useState(0); // Current page of users
-    const [hasMoreUsers, setHasMoreUsers] = useState(true); // Whether there are more users to load
+    const [userPage, setUserPage] = useState(0);
+    const [hasMoreUsers, setHasMoreUsers] = useState(true);
+    const [loadingMoreMessages, setLoadingMoreMessages] = useState(false);
 
 
 
@@ -49,7 +54,7 @@ const ChatRoom = () => {
     const stompClientRef = useRef(null);
 
     useEffect(() => {
-        // Automatically fetch user information and connect
+        // automatically fetch user information and connect
         getUserDetails();
 
         // cleanup function to disconnect on unmount
@@ -118,7 +123,7 @@ const ChatRoom = () => {
 
 
     useEffect(() => {
-        // Sync filteredUsers with users when users array updates
+        // sync filteredUsers with users when users array updates
         setFilteredUsers(users);
     }, [users]);
 
@@ -182,13 +187,17 @@ const ChatRoom = () => {
         console.log("Public message received:", payloadData);
 
         setPublicChats((prevChats) => [...prevChats, payloadData]);
+
+        // Scroll to bottom after receiving a new public message
+        setTimeout(() => {
+            scrollToBottom();
+        }, 100); // Slight delay to ensure DOM updates
     };
 
 
     // add private messages to users chat in state
     // made async so when function is called it and sends api request if fetches the conversation history
     const onPrivateMessage = async (payload) => {
-        // parse private messages
         const payloadData = JSON.parse(payload.body);
         console.log("Private message received:", payloadData);
 
@@ -198,20 +207,22 @@ const ChatRoom = () => {
                 : payloadData.senderName;
 
         setPrivateChats((prevChats) => {
-            const updatedChats = new Map(prevChats); // Create a new reference for updated and prev chats
+            const updatedChats = new Map(prevChats);
             if (!updatedChats.has(otherUser)) {
-                // Initialize chat if not present
                 updatedChats.set(otherUser, []);
             }
 
-            // append the message
             updatedChats.set(otherUser, [...updatedChats.get(otherUser), payloadData]);
             console.log("Updated privateChats:", updatedChats);
             return updatedChats;
         });
 
-        // fetch updated messages to ensure data consistency
         await fetchConversationHistory(otherUser);
+
+        // Scroll to the bottom of the conversation after receiving a new private message
+        setTimeout(() => {
+            scrollToBottom();
+        }, 100);
     };
 
 
@@ -242,25 +253,29 @@ const ChatRoom = () => {
                 timestamp: new Date().toISOString(),
             };
 
-            // Send the message through WebSocket
+            // send the message through WebSocket
             const endpoint = tab === "CHATROOM" ? "/app/message" : "/app/private-message";
             stompClientRef.current.send(endpoint, {}, JSON.stringify(chatMessage));
 
-            // Clear the input field
+
             setUserData((prevState) => ({ ...prevState, message: "" }));
 
-            // Fetch updated messages after sending
+
             if (tab === "CHATROOM") {
-                await fetchPublicMessages(); // Fetch updated public messages
+                await fetchPublicMessages();
             } else {
-                await fetchConversationHistory(tab); // Fetch updated conversation messages
+                await fetchConversationHistory(tab);
             }
+
+            // scroll to bottom after sending a message
+            scrollToBottom();
         }
     };
 
 
 
-    // handle when tab is changed from chatroom to a user, or user to user then fetch conversation history
+
+
     const handleTabChange = (selectedTab) => {
         setTab(selectedTab);
 
@@ -271,68 +286,107 @@ const ChatRoom = () => {
                 return newChats;
             });
 
-            // Fetch conversation history for the selected tab
             fetchConversationHistory(selectedTab);
         }
     };
 
 
-    // Function to fetch public messages with pagination when called
-    const fetchPublicMessages = async () => {
+
+    const fetchPublicMessages = async (page = 0) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/public-messages?page=${publicPage}&size=20`, {
-                headers: { Authorization: `Bearer ${getToken()}` },
-            });
+            const response = await fetch(
+                `http://localhost:8080/api/public-messages?page=${page}&size=20`,
+                {
+                    headers: { Authorization: `Bearer ${getToken()}` },
+                }
+            );
+
             if (!response.ok) {
                 throw new Error(`Error: ${response.status} ${response.statusText}`);
             }
+
             const data = await response.json();
 
-            if (data.length === 0) {
-                return;
+            if (data.length > 0) {
+                setPublicChats((prevChats) => [...data.reverse(), ...prevChats]);
+                setPublicPage(page);
+                setPublicHasMore(true);
+            } else {
+                setPublicHasMore(false);
             }
-
-            setPublicChats(prevChats => [...prevChats, ...data]);
-            setPublicPage(prevPage => prevPage + 1);
-
         } catch (error) {
             console.error("Error fetching public messages:", error);
-            alert("Failed to load public messages. Please try again later.");
         }
     };
 
-    // Function to fetch conversation history between two users with pagination when called and sends rest api request
+
     const fetchConversationHistory = async (otherUser) => {
         try {
-
-            const response = await fetch(`http://localhost:8080/api/conversation/${otherUser}?page=0&size=20`, {
+            const response = await fetch(`http://localhost:8080/api/conversation/${otherUser}`, {
                 headers: { Authorization: `Bearer ${getToken()}` },
             });
 
             if (!response.ok) {
                 throw new Error(`Error: ${response.status} ${response.statusText}`);
             }
+
             const data = await response.json();
 
-            setPrivateChats(prevChats => {
+            // add messages
+            setPrivateChats((prevChats) => {
                 const newChats = new Map(prevChats);
                 newChats.set(otherUser, data);
                 return newChats;
             });
 
+            // scroll to the bottom of the conversation after loading
+            setTimeout(() => {
+                scrollToBottom();
+            }, 100);
         } catch (error) {
-            console.error(`Error fetching conversation between ${userData.username} and ${otherUser}:`, error);
-            alert(`Failed to load conversation with ${otherUser}. Please try again later.`);
+            console.error(`Error fetching conversation with ${otherUser}:`, error);
         }
     };
 
-    // Initialize private chats pagination
+
+
+
+    useEffect(() => {
+        if (tab === "CHATROOM") {
+            scrollToBottom();
+        }
+    }, [publicChats, tab]);
+
+
+    useEffect(() => {
+        if (tab !== "CHATROOM") {
+            scrollToBottom();
+        }
+    }, [privateChats, tab]);
+
+
+
+
+    const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+            console.log("Scrolled to bottom");
+        } else {
+            console.log("messagesEndRef.current is null");
+        }
+    };
+
+
+
+    // initialize private chats pagination
     const initializePrivateChats = () => {
         users.forEach(user => {
             setPrivatePages(prev => ({ ...prev, [user.username]: 0 }));
             setPrivateHasMore(prev => ({ ...prev, [user.username]: true }));
         });
     };
+
+
 
     // search function
     const handleSearch = (query) => {
@@ -344,10 +398,12 @@ const ChatRoom = () => {
     };
 
 
+
+    // made changes to this so that it wouldnt create infinite loop of calling users
     const handleUserListScroll = (e) => {
         const { scrollTop, scrollHeight, clientHeight } = e.target;
 
-        // Check if we are at the bottom of the scroll and if there are more users to fetch
+        // check if we are at the bottom of the scroll and if there are more users to fetch
         if (scrollTop + clientHeight >= scrollHeight - 10 && hasMoreUsers) {
             // stop fetching users
             fetchUsers(false);
@@ -355,20 +411,42 @@ const ChatRoom = () => {
     };
 
 
+
+
+
+    // handles scrolling functionality, made async so that it only works when
+    // the scroll happens and its called
+    const handleScroll = async (e) => {
+        const { scrollTop } = e.target;
+
+        if (scrollTop <= 0 && privateHasMore[tab] && !loadingMoreMessages) {
+            setLoadingMoreMessages(true);
+            await fetchConversationHistory(tab);
+            setLoadingMoreMessages(false);
+        }
+    };
+
+
+
+
+
     return (
         <div className="container">
             {userData.connected ? (
                 <div className="chat-box">
                     <div className="member-list">
-                        {/* Search Box*/}
+                        {/* Search Box */}
                         <input
                             type="text"
                             placeholder="Search users..."
                             className="search-box"
                             onChange={(e) => handleSearch(e.target.value)}
                         />
-                        <div className="user-list" onScroll={handleUserListScroll}
-                             style={{maxHeight: "400px", overflowY: "auto"}}>
+                        <div
+                            className="user-list"
+                            onScroll={handleUserListScroll}
+                            style={{ maxHeight: "400px", overflowY: "auto" }}
+                        >
                             <ul>
                                 <li
                                     onClick={() => handleTabChange("CHATROOM")}
@@ -387,9 +465,13 @@ const ChatRoom = () => {
                                 ))}
                             </ul>
                         </div>
-
                     </div>
-                    <div key={componentKey} className="chat-content">
+                    <div
+                        key={componentKey}
+                        className="chat-content"
+                        onScroll={handleScroll}
+                        ref={chatContentRef}
+                    >
                         <ul className="chat-messages">
                             {tab === "CHATROOM" &&
                                 publicChats.map((chat) => (
@@ -407,7 +489,7 @@ const ChatRoom = () => {
                                     </li>
                                 ))}
                             {tab !== "CHATROOM" &&
-                                [...(privateChats.get(tab) || [])].map((chat) => (
+                                (privateChats.get(tab) || []).map((chat) => (
                                     <li
                                         key={chat.id}
                                         className={`message ${chat.senderName === userData.username ? "self" : ""}`}
@@ -421,7 +503,15 @@ const ChatRoom = () => {
                                         )}
                                     </li>
                                 ))}
+                            <div ref={messagesEndRef}/>
                         </ul>
+
+                        {/* Loading indicator for fetching more messages */}
+                        {loadingMoreMessages && (
+                            <div className="loading-more-messages">
+                                Loading more messages...
+                            </div>
+                        )}
                         <div className="send-message">
                             <input
                                 type="text"
@@ -450,6 +540,7 @@ const ChatRoom = () => {
             )}
         </div>
     );
+
 };
 
 export default ChatRoom;

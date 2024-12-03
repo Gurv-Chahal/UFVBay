@@ -19,16 +19,16 @@ const Signup = () => {
                 username: username,
                 name: name,
                 email: email,
-                // using password state directly fixed the issue
+                // using password state directly fixed the issue with signup page
                 password: password,
             };
 
-            // Send API call to backend endpoint auth/register
+            // snd API call to backend endpoint auth/register
             registerAPICall(userData)
                 .then((response) => {
                     console.log(response.status, response.data);
                     alert("You have successfully created a new account");
-                    // Navigate to login page after successful registration
+                    // navigate to login page after successful registration
                     navigate("/login");
                 })
                 .catch((error) => {
