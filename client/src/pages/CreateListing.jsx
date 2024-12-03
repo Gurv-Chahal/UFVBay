@@ -148,7 +148,7 @@ const CreateListing = () => {
                 Select subject
               </option>
               <option value="MATH">MATH</option>
-              <option value="COMP">COMPUTER SCIENCE</option>
+              <option value="COMPUTER SCIENCE">COMPUTER SCIENCE</option>
               <option value="PHYSICS">PHYSICS</option>
             </select>
           </div>

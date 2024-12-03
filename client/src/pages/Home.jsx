@@ -66,11 +66,14 @@ const Home = () => {
 
               return (
                 <div key={product.id} className="m-4">
-                  <Link to={`/item/${product.id}`}>
+                  <Link
+                    to={`/item/${product.id}`}
+                    style={{ textDecoration: "none" }}
+                  >
                     <ProductCards
-                      price={`CA ${product.amount || product.price}`}
+                      price={`CA ${product.amount || product.price}$`}
                       image={image}
-                      name={product.title || product.name}
+                      name={product.title}
                       author={product.author}
                     />
                   </Link>

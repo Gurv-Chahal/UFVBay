@@ -3,7 +3,8 @@ import "../public/Item.css";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import Map from "../components/Map.jsx";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import axios from "Axios";
 
 const Item = () => {
@@ -146,7 +147,7 @@ const Item = () => {
   return (
     <div className="container-fluid row" style={{ height: "100vh" }}>
       <div
-        className="col-9 d-flex justify-content-center align-items-center position-relative border "
+        className="col-9 d-flex justify-content-between align-items-center position-relative border"
         style={{
           backgroundImage: `url(${slider})`,
           backgroundSize: "cover",
@@ -155,6 +156,7 @@ const Item = () => {
           overflow: "hidden",
         }}
       >
+        {/* Overlay */}
         <div
           style={{
             position: "absolute",
@@ -166,35 +168,45 @@ const Item = () => {
             zIndex: 1,
           }}
         ></div>
+
+        {/* Top-Left Arrow */}
+        <Link to={`/`}>
+          <KeyboardBackspaceIcon
+            style={{
+              position: "absolute",
+              top: "1rem",
+              left: "1rem",
+              zIndex: 3,
+              color: "white",
+              fontSize: "2rem",
+              cursor: "pointer",
+            }}
+            onClick={DecSlider}
+          />
+        </Link>
+
+        {/* Left Arrow */}
         <ArrowBackIosIcon
           style={{
             zIndex: 3,
             color: "white",
             fontSize: "2rem",
             cursor: "pointer",
+            marginLeft: "1rem",
           }}
           onClick={DecSlider}
         />
 
-        {/*if image array exists and there is more then 1 image then show arrow forward and back button
-                and onClick trigger DecSlider IncSlider functions*/}
-        {listing.imageUrls && listing.imageUrls.length > 1 && <></>}
-        <ArrowForwardIosIcon
-          onClick={IncSlider}
-          style={{
-            zIndex: 3,
-            color: "white",
-            fontSize: "2rem",
-            cursor: "pointer",
-          }}
-        />
-
+        {/* Image */}
         {slider ? (
           <img
             src={slider}
             alt="Listing Image"
             className="w-50 position-relative mx-auto"
-            style={{ zIndex: 2, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)" }}
+            style={{
+              zIndex: 2,
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+            }}
           />
         ) : (
           <div
@@ -211,6 +223,18 @@ const Item = () => {
             <p>No image available</p>
           </div>
         )}
+
+        {/* Right Arrow */}
+        <ArrowForwardIosIcon
+          onClick={IncSlider}
+          style={{
+            zIndex: 3,
+            color: "white",
+            fontSize: "2rem",
+            cursor: "pointer",
+            marginRight: "1rem",
+          }}
+        />
       </div>
 
       <div className="col-3" style={{ height: "100vh", overflowY: "auto" }}>

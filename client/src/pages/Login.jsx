@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../public/Auth.css";
+import signupimg from "../images/signupimg-Photoroom.png";
 import ufvbaylogo from "../images/ufvbaylogo.png";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -9,7 +10,6 @@ import {
   storeUserId,
 } from "../services/AuthService.js";
 
-
 const Auth = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -17,41 +17,38 @@ const Auth = () => {
 
   // made it async so that it waits for login api call to finish to make sure everything
   // runs in correct order
-    async function handlelogin() {
-        // loginAPICall function sends api request to auth/login endpoint in backend
-        await loginAPICall(username, password)
-            .then((response) => {
+  async function handlelogin() {
+    // loginAPICall function sends api request to auth/login endpoint in backend
+    await loginAPICall(username, password)
+      .then((response) => {
+        // save JWT token
+        let token = response.data.accessToken;
+        // save user id
+        let userId = response.data.userId;
 
-                // save JWT token
-                let token = response.data.accessToken;
-                // save user id
-                let userId = response.data.userId;
+        // had to do this weird solution because I kept getting error with bearer token not correctly passing ->
 
-                // had to do this weird solution because I kept getting error with bearer token not correctly passing ->
+        // remove 'Bearer ' from front if it exists
+        token = token.replace(/^Bearer\s+/i, "");
+        // remove all whitespace characters
+        token = token.replace(/\s+/g, "");
 
-                // remove 'Bearer ' from front if it exists
-                token = token.replace(/^Bearer\s+/i, '');
-                // remove all whitespace characters
-                token = token.replace(/\s+/g, '');
+        // store token in browser localstorage
+        storeToken(token);
 
-                // store token in browser localstorage
-                storeToken(token);
+        // store userId in localStorage
+        storeUserId(userId);
 
-                // store userId in localStorage
-                storeUserId(userId);
+        // store user info in sessionstorage to save the authenticated user state during current session
+        saveLoggedInUser(username);
 
-                // store user info in sessionstorage to save the authenticated user state during current session
-                saveLoggedInUser(username);
-
-                // go back to home page
-                navigator("/");
-            })
-            .catch((error) => {
-                console.log('Login error:', error);
-            });
-    }
-
-
+        // go back to home page
+        navigator("/");
+      })
+      .catch((error) => {
+        console.log("Login error:", error);
+      });
+  }
 
   return (
     <div className="w-full h-screen d-flex align-items-center justify-content-center">
@@ -115,6 +112,16 @@ const Auth = () => {
               Log In
             </button>
           </div>
+
+          <div className="d-flex justify-content-center my-2">
+            <span style={{ marginRight: "8px" }}>
+              <p>Don't have an account?</p>
+            </span>
+
+            <Link to="/signup" style={{ textDecoration: "none" }}>
+              <span style={{ color: "blue" }}>Create Account</span>
+            </Link>
+          </div>
         </div>
         <div className="col-6  d-flex flex-column justify-content-center bg-signup">
           <div className="d-flex align-items-center justify-content-center">
@@ -140,26 +147,12 @@ const Auth = () => {
                   width: "800px",
                 }}
               >
-                Make an account and start shopping for textbooks for cheap!
+                Welcome back! Checkout the newest listings while you were gone!
               </h3>
             </div>
           </div>
+          <img src={signupimg} />
           {/*Button redirects to signup page*/}
-          <Link to="/signup" style={{ textDecoration: "none" }}>
-            <div className="d-flex justify-content-center">
-              <button
-                className="btn btn-light-green p-3 rounded-pill"
-                style={{
-                  width: "200px",
-                  backgroundColor: "#3AF669",
-                  border: "2px solid #fff",
-                  color: "#fff",
-                }}
-              >
-                Create Account
-              </button>
-            </div>
-          </Link>
         </div>
       </div>
     </div>
