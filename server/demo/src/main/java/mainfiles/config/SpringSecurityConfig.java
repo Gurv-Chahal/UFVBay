@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -29,6 +30,7 @@ import java.util.Arrays;
 
 // Need @Configuration annotation to inject bean into spring context so that spring can take care of class
 @Configuration
+@EnableMethodSecurity
 public class SpringSecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
@@ -64,6 +66,7 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/ws/**").permitAll() // Permit WebSocket endpoints
                         .requestMatchers("/auth/**").permitAll() // Permit authentication endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/listings/**").permitAll()
                         .anyRequest().authenticated() // Secure other endpoints
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)

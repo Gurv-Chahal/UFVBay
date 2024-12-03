@@ -74,6 +74,7 @@ public class ListingController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("@listingSecurity.isOwner(authentication, #id)")
     public ResponseEntity<ListingDTO> updateListing(@PathVariable Long id, @RequestBody ListingDTO listingDTO) {
         // call update listing implementation
         ListingDTO updatedListing = listingService.updateListing(id, listingDTO);
@@ -82,6 +83,7 @@ public class ListingController {
 
     // used in Item.jsx
     @DeleteMapping("/{id}")
+    @PreAuthorize("@listingSecurity.isOwner(authentication, #id)")
     public ResponseEntity<String> deleteListing(@PathVariable Long id) {
         // calls delete listing method implementation
         listingService.deleteListing(id);
@@ -89,6 +91,7 @@ public class ListingController {
     }
 
     @GetMapping("/user")
+    @PreAuthorize("isAuthenticated()") // Ensures only authenticated users can access
     // used in UserListings.jsx
     public ResponseEntity<List<ListingDTO>> getUserListings() {
 
@@ -101,6 +104,7 @@ public class ListingController {
     }
 
     @GetMapping("/userinfo")
+    @PreAuthorize("isAuthenticated()")
     // Used in accountinfo.jsx
     public ResponseEntity<UserDTO> getUserInfo() {
 

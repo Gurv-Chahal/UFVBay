@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 // repository interface for interacting with message entity
 
 
@@ -35,4 +37,14 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     // query - filter where reciever name is set to chatroom order by timestamp
     @Query("SELECT m FROM Message m WHERE m.receiverName = 'CHATROOM' ORDER BY m.timestamp DESC")
     Page<Message> findAllPublicMessages(Pageable pageable);
+
+
+
+
+    @Query("SELECT m FROM Message m WHERE " +
+            "(m.senderName = :user1 AND m.receiverName = :user2) OR " +
+            "(m.senderName = :user2 AND m.receiverName = :user1) " +
+            "ORDER BY m.timestamp ASC") // Use ascending order for natural chat flow
+    List<Message> findFullConversationBetweenUsers(String user1, String user2);
+
 }
