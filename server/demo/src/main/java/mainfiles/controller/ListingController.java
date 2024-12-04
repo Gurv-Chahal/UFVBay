@@ -91,7 +91,8 @@ public class ListingController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("isAuthenticated()") // Ensures only authenticated users can access
+    // Ensures only authenticated users can access
+    @PreAuthorize("isAuthenticated()")
     // used in UserListings.jsx
     public ResponseEntity<List<ListingDTO>> getUserListings() {
 

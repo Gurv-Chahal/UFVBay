@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -16,140 +17,111 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-// controller handles communication between websockets and front end api requests
-
+// Controller handles communication between WebSockets and frontend API requests
 @Controller
 public class ChatController {
 
-
-    // SimpMessagingTemplate is apart of spring and used to send websocket messages
+    // SimpMessagingTemplate is part of Spring and used to send WebSocket messages
+    // using @autowired to directly inject field into spring context
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    // Injecting MessageService class as a field
+    // Injecting MessageService class as a field, MessageService handles message operations
     @Autowired
     private MessageService messageService;
 
 
 
-
-    // 1. Handles public messages sent via websocket and broadcasts them to every user this is for chatroom
-
-    // MessageMapping maps websocket messages sent to /message api
-    @MessageMapping("/message")
-    // @Payload extracts message data from a websocket request such as sendername, message, timestamp
-    public void broadcastMessage(@Payload Message message) {
-
-        // calls the saveMessage method to save this message to the database and add uniqueID
-        Message savedMessage = messageService.saveMessage(message);
-
-        // then brodcast this saved message to all websocket clients subscribed to /chatroom/public
-        // which is the public chatroom
-        simpMessagingTemplate.convertAndSend("/chatroom/public", savedMessage); // Broadcast
-    }
-
-
-
-    // 2. send private messages between users and make sure both sender and reciever see messages
-
-    // maps websocket messages sent to /private-message api
+    // Handles private messages between users and ensures both sender and receiver see messages
     @MessageMapping("/private-message")
-    //@payload extracts message data
+    // extract payload of websocket message into message variable
     public void sendPrivateMessage(@Payload Message message) {
-        // save the message in database
-        Message savedMessage = messageService.saveMessage(message); // Save with timestamp and ID
-        // Send the message to private reciever in private channel /user/{username}/private
+        // save message in database and assign to savedMessage
+        Message savedMessage = messageService.saveMessage(message);
+        // Send the message to the private reciever in channel /user/{username}/private
         simpMessagingTemplate.convertAndSendToUser(savedMessage.getReceiverName(), "/private", savedMessage);
-        // Also send back to sender to update the local uI
+        // also send back to sender to update the local user interface
         simpMessagingTemplate.convertAndSendToUser(savedMessage.getSenderName(), "/private", savedMessage);
     }
 
 
-    // 3. Fetch paginated list of public messages from the database for public messaging
 
-    // maps http get request to api/public-messages
-    @GetMapping("/api/public-messages")
-    @ResponseBody
-    public List<Message> getPublicMessages(
-            // extract query parameters for pagination and set default value
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-
-        // creates a pageable request with sorting by timestamp
-        Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
-
-        //call get all public messages and store in page object
-        Page<Message> publicMessages = messageService.getAllPublicMessages(pageable);
-        System.out.println("Fetched " + publicMessages.getContent().size() + " public messages");
-
-        // return and extract list of messages from page object
-        return publicMessages.getContent();
-    }
-
-
-
-    // 4. Fetch all messages sent and recieved for authenticated user
-
-    // map to http request api-messages
+    // Fetch all messages sent and received for authenticated user
     @GetMapping("/api/messages")
+    // used responsebody to indicate that retrn value should be written into the http response
     @ResponseBody
     public List<Message> getUserMessages(
-            // extract query parameters for pagination and set default value for how many messages to be extracted
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size) {
 
-        // retrieve authentication details of the current user
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // get username of the authenticated user
+        // retrieve current authenticated user details then get the users name from that
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        // fetch messages in a paginated manner and sort by timestamp
+        // retrieves page object with specified page, size, and sorts it by timestamp
         Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
 
-        // fetch messages where the user is the reciever
+        // retrieves page of messages recieved by the authenticated user
         Page<Message> receivedMessages = messageService.getMessagesByReceiver(username, pageable);
 
-        // ftch messages where user is the sender
+        // retrieves page of messages sent by the authenticated user
         Page<Message> sentMessages = messageService.getMessagesBySender(username, pageable);
 
-        // create a List of Messages
+        //Create list to hold all messages for the user
         List<Message> allMessages = new ArrayList<>();
 
-        // combine all recieved and sent messages into one list
+        // add sent and recieved messages to the list
         allMessages.addAll(receivedMessages.getContent());
         allMessages.addAll(sentMessages.getContent());
 
-        // sort by timestamp
+        // sort all messages by timestamp in descending order
         allMessages.sort((m1, m2) -> m2.getTimestamp().compareTo(m1.getTimestamp()));
-        System.out.println("Fetched " + allMessages.size() + " messages for user " + username);
+
+        // return combined and sorted messages arraylist
         return allMessages;
     }
 
-
-
-
+    // Fetch conversation between two users
     @GetMapping("/api/conversation/{user2}")
     @ResponseBody
     public List<Message> getConversation(@PathVariable String user2) {
-        // Retrieve authentication details
+
+        // retrieves authenticated user details then from that retrieves the name
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // Extract username of the authenticated user
         String user1 = authentication.getName();
 
-        // Fetch all messages between user1 and user2 without pagination
+        // gets full conversation between authenticated user and the other specified user
         List<Message> conversation = messageService.getFullConversationBetweenUsers(user1, user2);
 
         System.out.println("Fetched full conversation between " + user1 + " and " + user2 + ": " + conversation.size() + " messages");
+
+        // mark messages from user2 to user1 as read
+        messageService.markMessagesAsRead(user2, user1);
 
         return conversation;
     }
 
 
+    // Endpoint to mark messages from a sender as read by the receiver
+    @PostMapping("/api/messages/mark-read")
+    @ResponseBody
+    public ResponseEntity<String> markMessagesAsRead(@RequestParam String sender) {
 
+        // retrieve currnt authenticated user details and then gets the name from that
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String receiver = authentication.getName();
 
+        // marks messages from sender to authenticated user as read and returns count of updates messages
+        int updated = messageService.markMessagesAsRead(sender, receiver);
+
+        // check if any messages were updated
+        if(updated > 0){
+            return ResponseEntity.ok("Marked " + updated + " messages as read.");
+        }
+        return ResponseEntity.ok("No unread messages to mark as read.");
+    }
 
 }

@@ -47,8 +47,6 @@ public class Listing {
     @Column(nullable=true)
     private Float latitude;
 
-   
-
     // element collection specifies image urls to be stored in a different table
     @ElementCollection
     // new table is called listing_images and it joins columns with listing_id
@@ -60,7 +58,7 @@ public class Listing {
 
     // many to One relationship with User and only loads user from database if specifically asked
     @ManyToOne(fetch = FetchType.LAZY)
-    // join user_id column in database table
+    // join user_id column in database table which is a foriegn key that links listings and users
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

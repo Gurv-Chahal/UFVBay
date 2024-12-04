@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 public class CloudinaryConfig {
 
     //using @Value to extract data from application.properties file and inject into fields
-
     @Value("${cloudinary.cloud-name}")
     private String cloudName;
 
@@ -25,11 +24,12 @@ public class CloudinaryConfig {
     private String apiSecret;
 
 
-    // returns instance of Cloudinary class
+    // define cloudinary bean to be managed by spring context
     @Bean
     public Cloudinary cloudinary() {
 
-        // constructor uses map to create key-value pairs for parameters to Cloudinary account
+        // creates an instance and configures it with key value pairs
+        // ObjectUtils.asMap is a method provided by Cloudinary to create key value pairs
         Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", cloudName,
                 "api_key", apiKey,

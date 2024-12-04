@@ -50,7 +50,7 @@ public class SpringSecurityConfig {
 
     // @Bean tells spring to manage the method in spring container
     @Bean
-    // static because we don't need an instance of is, PasswordEncoder is imported from Spring
+    // static because we don't need an instance of this, PasswordEncoder is imported from Spring
     // because we need to return what type of password encryption we want to use
     public static PasswordEncoder passwordEncoder() {
 
@@ -61,15 +61,27 @@ public class SpringSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        // configure http
         http
+                // disable csrf
                 .csrf(csrf -> csrf.disable())
+                // config auth rules for http requests
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ws/**").permitAll() // Permit WebSocket endpoints
-                        .requestMatchers("/auth/**").permitAll() // Permit authentication endpoints
+                        // allow all requests to websocket endpoints
+                        .requestMatchers("/ws/**").permitAll()
+                        // allow all requests to authentication endpoints
+                        .requestMatchers("/auth/**").permitAll()
+                        // allow all get requests to listing endpoints
                         .requestMatchers(HttpMethod.GET, "/api/listings/**").permitAll()
-                        .anyRequest().authenticated() // Secure other endpoints
+                        // require authentication for all other endpoints
+                        .anyRequest().authenticated()
                 )
+
+                // custm filter before default username/password filter
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // enable CORS
                 .cors(Customizer.withDefaults());
 
         return http.build();

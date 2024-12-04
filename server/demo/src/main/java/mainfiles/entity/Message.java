@@ -1,5 +1,3 @@
-// src/main/java/mainfiles/entity/Message.java
-
 package mainfiles.entity;
 
 import jakarta.persistence.*;
@@ -9,10 +7,9 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
-
-// entity class for messages table in database
-
 @Entity
+
+// defines table name and defines the indexes for better performance since messaging needs to be quick
 @Table(name = "messages", indexes = {
         @Index(columnList = "senderName"),
         @Index(columnList = "receiverName"),
@@ -33,19 +30,13 @@ public class Message {
     @Column(length = 1000)
     private String message;
 
+    // automatically set timestamp when entity is created
     @CreatedDate
     private LocalDateTime timestamp;
 
+    // indicate weather message is read and cannot be null
+    @Column(nullable = false)
+    private boolean isRead = false;
 
-    // Constructors
-    public Message() {
-    }
-
-    public Message(String senderName, String receiverName, String message, LocalDateTime timestamp) {
-        this.senderName = senderName;
-        this.receiverName = receiverName;
-        this.message = message;
-        this.timestamp = timestamp;
-    }
 
 }

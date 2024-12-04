@@ -16,10 +16,16 @@ public class UserUtil {
     private final UserRepository userRepository;
 
     public Long getCurrentUserId() {
+
+        // retrieve authentication object and from that get the username
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
+
+        // find the user by username or email in database
         User user = userRepository.findByUsernameOrEmail(username, username)
                 .orElseThrow(() -> new RuntimeException("User not found with username or email: " + username));
+
+        // return id of authenticated user
         return user.getId();
     }
 }

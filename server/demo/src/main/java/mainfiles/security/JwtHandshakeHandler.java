@@ -13,11 +13,15 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+// this class is to validate JWT tokens intercepted ffrom websocket requests
 public class JwtHandshakeHandler implements HandshakeInterceptor {
 
+    // inject jwtToken field into spring context
     @Autowired
     private JwtToken jwtToken;
 
+
+    // this method is executed before websocket handshake is finished
     @Override
     public boolean beforeHandshake(
             ServerHttpRequest request,
@@ -25,19 +29,35 @@ public class JwtHandshakeHandler implements HandshakeInterceptor {
             WebSocketHandler wsHandler,
             Map<String, Object> attributes
     ) {
+
+        // get the query string from websocket handshare request
         String query = request.getURI().getQuery();
+
+        // if query parameters are not null
         if (query != null) {
+
+            // parse query parameters into a map using UriComponentsBuilder which is a built in spring web dependency
             Map<String, List<String>> queryParams = UriComponentsBuilder.fromUriString("?" + query).build().getQueryParams();
+
+            // get token parameter from query parameters
             List<String> tokenList = queryParams.get("token");
 
+            // if token parameters are present and not empty
             if (tokenList != null && !tokenList.isEmpty()) {
+
+                // retrieve the first token from the list
                 String token = tokenList.get(0);
-                System.out.println("Received token: " + token); // Logging
+
+                // validate token using validateToken method in JwtToken class
                 if (jwtToken.validateToken(token)) {
+
+                    // extract username from token
                     String username = jwtToken.getUsername(token);
-                    System.out.println("Authenticated username: " + username); // Logging
+                    // add authenticated username to websocket attribute
                     attributes.put("username", username);
+
                     return true;
+
                 } else {
                     System.out.println("Invalid token");
                 }
@@ -47,9 +67,12 @@ public class JwtHandshakeHandler implements HandshakeInterceptor {
         } else {
             System.out.println("No query params in handshake request");
         }
-        return false; // Reject handshake if token is invalid
+
+        // return false if websocket handshake is not valid
+        return false;
     }
 
+    // must be implemented because its in the HandshakeInterceptor
     @Override
     public void afterHandshake(
             ServerHttpRequest request,
@@ -57,6 +80,6 @@ public class JwtHandshakeHandler implements HandshakeInterceptor {
             WebSocketHandler wsHandler,
             Exception exception
     ) {
-        // No additional action needed after handshake
+
     }
 }

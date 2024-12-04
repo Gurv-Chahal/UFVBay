@@ -27,7 +27,7 @@ public class JwtToken {
     // method to Generate a JWT token for an authenticated user
     public String generateToken(Authentication authentication) {
 
-        // Extracts the username of the authenticated user
+        // extracts the username of the authenticated user
         String username = authentication.getName();
 
         // get current date and time
@@ -45,11 +45,10 @@ public class JwtToken {
                 .signWith(key())
                 .compact();
 
-        // Returns the token
         return token;
     }
 
-    // private helper method to create and return a signing key for JWT
+    // private helper method to create and return a signing key for JWT using secret in application.properties
     private Key key() {
         return Keys.hmacShaKeyFor(
                 Decoders.BASE64.decode(jwtSecret)
@@ -58,6 +57,7 @@ public class JwtToken {
 
     // Method to extract the username from a JWT token
     public String getUsername(String token) {
+
         // parses the JWT token, extracts the claims, and retrieves the subject (username)
         Claims claims = Jwts.parser()
                 .setSigningKey(key())
@@ -68,12 +68,12 @@ public class JwtToken {
         // retrieves the subject (username) from the claims
         String username = claims.getSubject();
 
-        // Returns the username
         return username;
     }
 
     // method to validate a JWT token
     public boolean validateToken(String token) {
+
         // Parses the token to ensure it is valid and not tampered with
         Jwts.parser()
                 .setSigningKey(key())
