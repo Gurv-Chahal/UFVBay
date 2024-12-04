@@ -8,14 +8,14 @@ import "../public/navbar.css";
 const Navbar = ({ onSearch, results }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showChatRoom, setShowChatRoom] = useState(false); // State to toggle chat room
+  const [showChatRoom, setShowChatRoom] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false); // Close the dropdown
+        setShowDropdown(false);
       }
     };
 

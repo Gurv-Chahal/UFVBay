@@ -1,8 +1,8 @@
 .chat-box {
 
-    margin: 2%; /* Dynamic margin */
-    height: 70vh; /* Dynamic height: 80% of viewport height */
-    max-height: 90vh; /* Prevent it from taking too much height */
+    margin: 2%;
+    height: 70vh;
+    max-height: 90vh;
     padding: 10px;
     display: flex;
     flex-direction: row;
@@ -61,34 +61,38 @@ button {
 
 .member-list {
     width: 100%;
-    min-width: 200px; /* Minimum width for small screens */
-    max-width: 300px; /* Maximum width for larger screens */
-    overflow-y: auto; /* Add scroll if content overflows */
+    min-width: 200px;
+    max-width: 300px;
+    overflow-y: auto;
     border-radius: 30px;
     margin-top: 45px;
 }
 
+.member.unread {
+    background-color: yellow;
+}
+
 .chat-content {
-    flex-grow: 1; /* Take up the remaining width */
+    flex-grow: 1;
     margin-left: 10px;
-    overflow-y: auto; /* Enable scrolling */
+    overflow-y: auto;
     display: flex;
-    flex-direction: column ; /* Stack messages and input vertically */
+    flex-direction: column ;
     border: 1px solid black;
     border-radius: 8px;
     padding: 10px;
     background: #ffffff;
-    height: 100%; /* Full height of the parent container */
+    height: 100%;
 
 }
 
 .chat-messages {
-    flex-grow: 1; /* Expand to fill available space */
+    flex-grow: 1;
     border: 1px solid black;
     border-radius: 4px;
     padding: 10px;
     margin-bottom: 10px;
-    overflow-y: auto; /* Add scroll if content overflows */
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     list-style: none;
@@ -119,26 +123,26 @@ button {
     display: flex;
     flex-direction: row;
     gap: 10px;
-    margin-top: auto; /* Push to the bottom of the container */
+    margin-top: auto;
     padding: 10px 0;
     background: #f1f1f1;
 }
 
 .input-message {
-    flex-grow: 1; /* Fill the available space */
+    flex-grow: 1;
     border-radius: 50px;
     padding: 10px;
     border: 1px solid green;
     font-size: 1rem;
-    max-height: 40px; /* Optional: Limit height */
+    max-height: 40px;
 }
 
 .send-button {
-    width: auto; /* Fit the button content */
+    width: auto;
     border-radius: 10px;
     cursor: pointer;
     font-size: 1rem;
-    padding: 10px 20px; /* Increase clickable area */
+    padding: 10px 20px;
     border: none;
     background-color: green;
     color: white;
@@ -157,6 +161,8 @@ button {
     margin: 5px 15px 5px 2px;
     box-shadow: 0 8px 15px -4px lightblue;
     border-radius: 20px;
+    transition: background-color 0.3s ease;
+
 }
 
 
@@ -205,28 +211,28 @@ ul {
     list-style-type: none;
 }
 
-/* Responsive Breakpoints */
+/* Responsive  */
 @media (max-width: 768px) {
     .chat-box {
-        flex-direction: column; /* Stack sidebar and content vertically */
-        height: 90vh; /* Adjust height for smaller screens */
+        flex-direction: column;
+        height: 90vh;
     }
 
     .member-list {
-        width: 100%; /* Sidebar takes full width */
+        width: 100%;
         max-width: none;
-        height: 30%; /* Sidebar height */
+        height: 30%;
     }
 
     .chat-content {
         flex-grow: 1;
-        height: 70%; /* Adjust height */
+        height: 70%;
     }
 }
 
 @media (max-width: 480px) {
     .input-message {
-        font-size: 0.9rem; /* Smaller input for mobile screens */
+        font-size: 0.9rem;
     }
 
     .send-button {

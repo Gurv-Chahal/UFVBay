@@ -80,7 +80,6 @@ export const getUserInfo = async () => {
 
   try {
     const response = await apiAxios.get(`api/listings/userinfo`);
-    // Return the user's information
     return response.data;
   } catch (error) {
     console.error("Error fetching user info from backend:", error);

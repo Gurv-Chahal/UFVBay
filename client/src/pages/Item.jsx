@@ -17,7 +17,7 @@ const Item = () => {
   const [error, setError] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
 
-  // State for Update Listing functionality
+  // state for Update Listing functionality
   const [isUpdating, setIsUpdating] = useState(false);
   const [updatedListing, setUpdatedListing] = useState({
     title: "",
@@ -93,10 +93,10 @@ const Item = () => {
   const handleDeleteListing = async () => {
     if (window.confirm("Are you sure you want to delete this listing?")) {
       try {
-        // Retrieve JWT token
+        // retrieve JWT token
         const token = localStorage.getItem("token");
 
-        // Send API delete request to backend
+        // send API delete request to backend
         await axios.delete(`http://localhost:8080/api/listings/${productId}`, {
           headers: {
             Authorization: `Bearer ${token}`,

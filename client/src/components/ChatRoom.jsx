@@ -6,14 +6,10 @@ import "../public/index.css";
 
 const ChatRoom = () => {
 
-
-
     // organize private chats by user in a Map
     const [privateChats, setPrivateChats] = useState(new Map());
-    // stores messages for public chats
-    const [publicChats, setPublicChats] = useState([]);
-    // track whether the user is viewing public or private chat
-    const [tab, setTab] = useState("CHATROOM");
+    // track whether the user is viewing private chat
+    const [tab, setTab] = useState(null); // Changed from "CHATROOM" to null
     // hold username, websocket connection status, and current message input
     const [userData, setUserData] = useState({
         username: "",
@@ -24,33 +20,14 @@ const ChatRoom = () => {
     const chatContentRef = useRef(null);
     const messagesEndRef = useRef(null);
 
-
-
-
-
-    // stores list of all users
+    // stores list of all users with unread counts
     const [users, setUsers] = useState([]);
-    // tracks current page for public message pagination
-    const [publicPage, setPublicPage] = useState(0);
-    const [publicHasMore, setPublicHasMore] = useState(true);
-    // tracks current pagination state for private messages
-    const [privatePages, setPrivatePages] = useState({});
-    const [privateHasMore, setPrivateHasMore] = useState({});
-    // stores filtered list of users for search functionality
-    const [filteredUsers, setFilteredUsers] = useState([]);
-
-
+    // tracks current page for user list pagination
     const [userPage, setUserPage] = useState(0);
     const [hasMoreUsers, setHasMoreUsers] = useState(true);
     const [loadingMoreMessages, setLoadingMoreMessages] = useState(false);
 
-
-
-    // key to force rerenders
-    const [componentKey, setComponentKey] = useState(0);
-
-
-    // Use a ref to store stompClient to prevent multiple connections
+    // use a ref to store stompClient to prevent multiple connections
     const stompClientRef = useRef(null);
 
     useEffect(() => {
@@ -67,11 +44,7 @@ const ChatRoom = () => {
         };
     }, []);
 
-
-
-
-    // retrieve user info, intialize websocket, and fetch list of users
-    // made async so it only runs when api request is called
+    // retrieve user info, initialize websocket, and fetch list of users
     const getUserDetails = async () => {
         try {
             // fetch user details
@@ -81,10 +54,10 @@ const ChatRoom = () => {
                     ...prevState,
                     username: user.username,
                 }));
-                // establish web socket connect
+                // establish websocket connection
                 connect(user.username);
-                // Get all users for sidebar
-                fetchUsers();
+                // get all users for sidebar
+                await fetchUsers();
             }
         } catch (error) {
             console.error("Error fetching user details:", error);
@@ -92,11 +65,10 @@ const ChatRoom = () => {
         }
     };
 
-
+    // fetch users with unread counts
     const fetchUsers = async (isLoadMore = false) => {
         try {
-
-            const response = await fetch(`http://localhost:8080/api/users?page=${userPage}&size=20`, {
+            const response = await fetch(`http://localhost:8080/api/users/unread?page=${userPage}&size=20`, {
                 headers: { Authorization: `Bearer ${getToken()}` },
             });
 
@@ -104,40 +76,33 @@ const ChatRoom = () => {
                 throw new Error(`Error: ${response.status} ${response.statusText}`);
             }
 
-            const data = await response.json();
+            const usersData = await response.json();
 
-            if (data.length === 0) {
+            if (usersData.length === 0) {
+                setHasMoreUsers(false);
                 return;
             }
 
-            const updatedUsers = isLoadMore ? [...users, ...data] : data;
 
+            let updatedUsers = isLoadMore ? [...users, ...usersData] : [...usersData];
+
+
+            // since backend sorts by lastMessageTime then maintain order
             setUsers(updatedUsers);
-            setFilteredUsers(updatedUsers); // Ensure filteredUsers matches users
         } catch (error) {
-            console.error("Error fetching users:", error);
+            console.error("Error fetching users with unread counts:", error);
             alert("Failed to load users. Please try again.");
         }
     };
 
 
-
-    useEffect(() => {
-        // sync filteredUsers with users when users array updates
-        setFilteredUsers(users);
-    }, [users]);
-
-
     // established websocket connection using sockjs and authenticates JWT token through URL
     const connect = (username) => {
-        // get JWT token
         const token = getToken();
-        // Attach JWT token as a query parameter
         const Sock = new SockJS(`http://localhost:8080/ws?token=${token}`);
         const stomp = over(Sock);
         stompClientRef.current = stomp;
 
-        // connect websocket
         stomp.connect(
             {},
             () => onConnected(username),
@@ -145,58 +110,19 @@ const ChatRoom = () => {
         );
     };
 
-
-    // subscribes to public and private websocket and initalizes chat states
+    // Subscribes to private websocket and initializes chat states
     const onConnected = (username) => {
         setUserData((prevState) => ({ ...prevState, connected: true }));
         console.log("Connected to WebSocket");
 
-        // subscribe to public chatroom
-        stompClientRef.current.subscribe("/chatroom/public", onMessageReceived);
-        console.log("Subscribed to /chatroom/public");
-
-        // subscribe to private messages
         stompClientRef.current.subscribe(`/user/${username}/private`, onPrivateMessage);
         console.log(`Subscribed to /user/${username}/private`);
 
-        userJoin(username);
-
-        // Fetch initial public messages
-        fetchPublicMessages();
-
-        // initialize pagination for private chats after users are fetched
-        initializePrivateChats();
     };
 
 
 
-    const userJoin = (username) => {
-        const chatMessage = {
-            senderName: username,
-            status: "JOIN",
-        };
-        stompClientRef.current.send("/app/message", {}, JSON.stringify(chatMessage));
-        console.log(`${username} joined the chatroom`);
-    };
-
-
-
-    // add received public messages to state
-    const onMessageReceived = (payload) => {
-        const payloadData = JSON.parse(payload.body);
-        console.log("Public message received:", payloadData);
-
-        setPublicChats((prevChats) => [...prevChats, payloadData]);
-
-        // Scroll to bottom after receiving a new public message
-        setTimeout(() => {
-            scrollToBottom();
-        }, 100); // Slight delay to ensure DOM updates
-    };
-
-
-    // add private messages to users chat in state
-    // made async so when function is called it and sends api request if fetches the conversation history
+    // Add private messages to users chat in state
     const onPrivateMessage = async (payload) => {
         const payloadData = JSON.parse(payload.body);
         console.log("Private message received:", payloadData);
@@ -217,122 +143,144 @@ const ChatRoom = () => {
             return updatedChats;
         });
 
-        await fetchConversationHistory(otherUser);
 
-        // Scroll to the bottom of the conversation after receiving a new private message
+        // Update the user list based on the sender
+        if (payloadData.senderName !== userData.username) {
+            setUsers((prevUsers) => {
+                return prevUsers.map((user) => {
+                    if (user.username === otherUser) {
+                        return {
+                            ...user,
+                            unreadCount: user.unreadCount + 1,
+                            lastMessageTime: payloadData.timestamp,
+                        };
+                    }
+                    return user;
+                }).sort((a, b) => {
+                    if (a.lastMessageTime && b.lastMessageTime) {
+                        return new Date(b.lastMessageTime) - new Date(a.lastMessageTime);
+                    } else if (a.lastMessageTime) {
+                        return -1;
+                    } else if (b.lastMessageTime) {
+                        return 1;
+                    }
+                    return 0;
+                });
+            });
+        }
+
+        // scroll to the bottom of the conversation after receiving a new private messagef
         setTimeout(() => {
             scrollToBottom();
         }, 100);
     };
-
-
 
     const onError = (err) => {
         console.error("Error connecting to WebSocket:", err);
         alert("Failed to connect to the chat server. Please try again.");
     };
 
-
     const handleMessage = (event) => {
         const { value } = event.target;
         setUserData((prevState) => ({ ...prevState, message: value }));
     };
 
-
-
-    // Send a message (public or private) and update the chat
-    // made async so that whenever a chat is sent when the api request is sent to the backend it
-    // calls the function and updates the chatbox for both users
+    // Send a private message and update the chat
     const sendMessage = async () => {
-        if (stompClientRef.current && userData.message.trim() !== "") {
+        if (stompClientRef.current && userData.message.trim() !== "" && tab) {
             const chatMessage = {
                 senderName: userData.username,
-                receiverName: tab === "CHATROOM" ? "CHATROOM" : tab,
+                receiverName: tab,
                 message: userData.message.trim(),
                 status: "MESSAGE",
                 timestamp: new Date().toISOString(),
             };
 
             // send the message through WebSocket
-            const endpoint = tab === "CHATROOM" ? "/app/message" : "/app/private-message";
+            const endpoint = "/app/private-message";
             stompClientRef.current.send(endpoint, {}, JSON.stringify(chatMessage));
-
 
             setUserData((prevState) => ({ ...prevState, message: "" }));
 
+            // update private chats
+            setPrivateChats((prevChats) => {
+                const updatedChats = new Map(prevChats);
+                if (!updatedChats.has(tab)) {
+                    updatedChats.set(tab, []);
+                }
+                updatedChats.set(tab, [...updatedChats.get(tab), chatMessage]);
+                return updatedChats;
+            });
 
-            if (tab === "CHATROOM") {
-                await fetchPublicMessages();
-            } else {
-                await fetchConversationHistory(tab);
-            }
+            // update the user list
+            setUsers((prevUsers) => {
+                return prevUsers.map((user) => {
+                    if (user.username === tab) {
+                        return {
+                            ...user,
+                            lastMessageTime: chatMessage.timestamp,
+                        };
+                    }
+                    return user;
+                }).sort((a, b) => {
+                    if (a.lastMessageTime && b.lastMessageTime) {
+                        return new Date(b.lastMessageTime) - new Date(a.lastMessageTime);
+                    } else if (a.lastMessageTime) {
+                        return -1;
+                    } else if (b.lastMessageTime) {
+                        return 1;
+                    }
+                    return 0;
+                });
+            });
 
             // scroll to bottom after sending a message
             scrollToBottom();
         }
     };
 
-
-
-
-
-    const handleTabChange = (selectedTab) => {
+    const handleTabChange = async (selectedTab) => {
         setTab(selectedTab);
 
-        if (selectedTab !== "CHATROOM" && !privateChats.has(selectedTab)) {
+        if (!privateChats.has(selectedTab)) {
             setPrivateChats((prevChats) => {
                 const newChats = new Map(prevChats);
                 newChats.set(selectedTab, []);
                 return newChats;
             });
 
-            fetchConversationHistory(selectedTab);
+            // Fetch conversation history (which marks messages as read)
+            await fetchConversationHistory(selectedTab, 1);
         }
+
+        await fetchUsers(false);
+
+        // reset unreadCount for the selected user
+        setUsers((prevUsers) =>
+            prevUsers.map((user) =>
+                user.username === selectedTab ? { ...user, unreadCount: 0 } : user
+            )
+        );
     };
 
-
-
-    const fetchPublicMessages = async (page = 0) => {
+    // fetch conversation history with a user
+    const fetchConversationHistory = async (otherUser, limit = 0) => {
         try {
-            const response = await fetch(
-                `http://localhost:8080/api/public-messages?page=${page}&size=20`,
-                {
-                    headers: { Authorization: `Bearer ${getToken()}` },
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            let url = `http://localhost:8080/api/conversation/${otherUser}`;
+            if (limit > 0) {
+                url += `?limit=${limit}`;
             }
 
-            const data = await response.json();
-
-            if (data.length > 0) {
-                setPublicChats((prevChats) => [...data.reverse(), ...prevChats]);
-                setPublicPage(page);
-                setPublicHasMore(true);
-            } else {
-                setPublicHasMore(false);
-            }
-        } catch (error) {
-            console.error("Error fetching public messages:", error);
-        }
-    };
-
-
-    const fetchConversationHistory = async (otherUser) => {
-        try {
-            const response = await fetch(`http://localhost:8080/api/conversation/${otherUser}`, {
+            const response = await fetch(url, {
                 headers: { Authorization: `Bearer ${getToken()}` },
             });
 
             if (!response.ok) {
-                throw new Error(`Error: ${response.status} ${response.statusText}`);
+                throw new Error(`Error fetching conversation with ${otherUser}: ${response.statusText}`);
             }
 
             const data = await response.json();
 
-            // add messages
             setPrivateChats((prevChats) => {
                 const newChats = new Map(prevChats);
                 newChats.set(otherUser, data);
@@ -343,30 +291,50 @@ const ChatRoom = () => {
             setTimeout(() => {
                 scrollToBottom();
             }, 100);
+
+            return data;
         } catch (error) {
             console.error(`Error fetching conversation with ${otherUser}:`, error);
+            return [];
         }
     };
 
 
 
+    // search function
+    const handleSearch = (query) => {
+        const lowerCaseQuery = query.toLowerCase();
+        // Fflter users based on search query
+        const filtered = users.filter((user) =>
+            user.username.toLowerCase().includes(lowerCaseQuery)
+        );
+        setUsers(filtered);
+    };
 
-    useEffect(() => {
-        if (tab === "CHATROOM") {
-            scrollToBottom();
+    // handle user list scroll for infinite loading
+    const handleUserListScroll = (e) => {
+        const { scrollTop, scrollHeight, clientHeight } = e.target;
+
+        // check if we are at the bottom of the scroll and if there are more users to fetch
+        if (scrollTop + clientHeight >= scrollHeight - 10 && hasMoreUsers) {
+            // increment the page number
+            setUserPage((prevPage) => prevPage + 1);
+            // stop fetching more users
+            fetchUsers(false);
         }
-    }, [publicChats, tab]);
+    };
 
+    // Handle scrolling functionality for chat messages
+    const handleScroll = async (e) => {
+        const { scrollTop } = e.target;
 
-    useEffect(() => {
-        if (tab !== "CHATROOM") {
-            scrollToBottom();
+        if (scrollTop <= 0 && !loadingMoreMessages) {
+            setLoadingMoreMessages(true);
+            setLoadingMoreMessages(false);
         }
-    }, [privateChats, tab]);
+    };
 
-
-
-
+    // scroll to bottom of messages
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -375,60 +343,6 @@ const ChatRoom = () => {
             console.log("messagesEndRef.current is null");
         }
     };
-
-
-
-    // initialize private chats pagination
-    const initializePrivateChats = () => {
-        users.forEach(user => {
-            setPrivatePages(prev => ({ ...prev, [user.username]: 0 }));
-            setPrivateHasMore(prev => ({ ...prev, [user.username]: true }));
-        });
-    };
-
-
-
-    // search function
-    const handleSearch = (query) => {
-        const lowerCaseQuery = query.toLowerCase();
-        const filtered = users.filter((user) =>
-            user.username.toLowerCase().includes(lowerCaseQuery)
-        );
-        setFilteredUsers(filtered);
-    };
-
-
-
-    // made changes to this so that it wouldnt create infinite loop of calling users
-    const handleUserListScroll = (e) => {
-        const { scrollTop, scrollHeight, clientHeight } = e.target;
-
-        // check if we are at the bottom of the scroll and if there are more users to fetch
-        if (scrollTop + clientHeight >= scrollHeight - 10 && hasMoreUsers) {
-            // stop fetching users
-            fetchUsers(false);
-        }
-    };
-
-
-
-
-
-    // handles scrolling functionality, made async so that it only works when
-    // the scroll happens and its called
-    const handleScroll = async (e) => {
-        const { scrollTop } = e.target;
-
-        if (scrollTop <= 0 && privateHasMore[tab] && !loadingMoreMessages) {
-            setLoadingMoreMessages(true);
-            await fetchConversationHistory(tab);
-            setLoadingMoreMessages(false);
-        }
-    };
-
-
-
-
 
     return (
         <div className="container">
@@ -448,47 +362,28 @@ const ChatRoom = () => {
                             style={{ maxHeight: "400px", overflowY: "auto" }}
                         >
                             <ul>
-                                <li
-                                    onClick={() => handleTabChange("CHATROOM")}
-                                    className={`member ${tab === "CHATROOM" ? "active" : ""}`}
-                                >
-                                    Chatroom
-                                </li>
-                                {filteredUsers.map((user) => (
+                                {users.map((user) => (
                                     <li
                                         key={user.username}
                                         onClick={() => handleTabChange(user.username)}
-                                        className={`member ${tab === user.username ? "active" : ""}`}
+                                        className={`member ${tab === user.username ? "active" : ""} ${
+                                            user.unreadCount > 0 ? "unread" : ""
+                                        }`}
                                     >
                                         {user.username}
+                                        {user.unreadCount > 0 && <span className="badge">{user.unreadCount}</span>}
                                     </li>
                                 ))}
                             </ul>
                         </div>
                     </div>
                     <div
-                        key={componentKey}
                         className="chat-content"
                         onScroll={handleScroll}
                         ref={chatContentRef}
                     >
                         <ul className="chat-messages">
-                            {tab === "CHATROOM" &&
-                                publicChats.map((chat) => (
-                                    <li
-                                        key={chat.id}
-                                        className={`message ${chat.senderName === userData.username ? "self" : ""}`}
-                                    >
-                                        {chat.senderName !== userData.username && (
-                                            <div className="avatar">{chat.senderName}</div>
-                                        )}
-                                        <div className="message-data">{chat.message}</div>
-                                        {chat.senderName === userData.username && (
-                                            <div className="avatar self">{chat.senderName}</div>
-                                        )}
-                                    </li>
-                                ))}
-                            {tab !== "CHATROOM" &&
+                            {tab &&
                                 (privateChats.get(tab) || []).map((chat) => (
                                     <li
                                         key={chat.id}
@@ -503,10 +398,10 @@ const ChatRoom = () => {
                                         )}
                                     </li>
                                 ))}
-                            <div ref={messagesEndRef}/>
+                            <div ref={messagesEndRef} />
                         </ul>
 
-                        {/* Loading indicator for fetching more messages */}
+                        {/* loading indicator for fetching more messages */}
                         {loadingMoreMessages && (
                             <div className="loading-more-messages">
                                 Loading more messages...

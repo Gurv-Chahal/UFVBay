@@ -20,7 +20,7 @@ const Signup = () => {
         username: username,
         name: name,
         email: email,
-        // using password state directly fixed the issue
+        // using password state directly fixed the issue previously in login/signup page not wokring
         password: password,
       };
       const handleSignUp = () => {

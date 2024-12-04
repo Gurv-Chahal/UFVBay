@@ -78,11 +78,10 @@ const CreateListing = () => {
       );
       console.log("Listing added:", response.data);
 
-      // Redirect to the listing page when submission is complete
+      // redirect to the listing page when submission is complete
       navigate(`/item/${response.data.id}`);
     } catch (error) {
       console.error("Error adding listing:", error);
-      // Show an error message to the user
       alert("An error occurred while adding the listing. Please try again.");
     }
   };

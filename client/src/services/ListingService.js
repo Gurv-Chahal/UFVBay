@@ -42,9 +42,4 @@ export function getUserListings() {
 }
 
 
-// Function to update a listing - still need to implement
-export function updateListing(id, listing) {
-    return axios.put(`${BASE_REST_API_URL}/api/listings/${id}`, listing);
-}
-
 
