@@ -6,6 +6,9 @@ import { useState } from "react";
 import { registerAPICall } from "../services/AuthService.js";
 
 const Signup = () => {
+
+
+
   // State
   const [name, setName] = useState("");
   const [username, setUserName] = useState("");
@@ -20,40 +23,17 @@ const Signup = () => {
         username: username,
         name: name,
         email: email,
-        // using password state directly fixed the issue previously in login/signup page not wokring
+        // using password state directly fixed the issue previously in login/signup page not wokring so ill leave this comment here
         password: password,
       };
-      const handleSignUp = () => {
-        if (password === confirmPassword) {
-          const userData = {
-            username: username,
-            name: name,
-            email: email,
-            // using password state directly fixed the issue with signup page
-            password: password,
-          };
 
-          // Send API call to backend endpoint auth/register
-          registerAPICall(userData)
-            .then((response) => {
-              console.log(response.status, response.data);
-              alert("You have successfully created a new account");
-              // Navigate to login page after successful registration
-              navigate("/login");
-            })
-            .catch((error) => {
-              console.error("Registration failed:", error);
-              alert("Registration failed. Please try again.");
-            });
-        } else {
-          alert("Passwords do not match. Please re-enter");
-        }
-      };
       // snd API call to backend endpoint auth/register
       registerAPICall(userData)
         .then((response) => {
+
           console.log(response.status, response.data);
           alert("You have successfully created a new account");
+
           // navigate to login page after successful registration
           navigate("/login");
         })

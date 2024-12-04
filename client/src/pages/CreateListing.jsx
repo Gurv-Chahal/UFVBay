@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 const CreateListing = () => {
   const navigate = useNavigate();
 
+
+  // state
   const [position, setPosition] = useState(null);
   const [preview, setPreview] = useState([]);
   const [bookTitle, setBookTitle] = useState("");
@@ -28,9 +30,13 @@ const CreateListing = () => {
       file,
       preview: URL.createObjectURL(file),
     }));
+
+    // update state to include previous images and new images
     setPreview((prev) => [...prev, ...newPreviews]);
   };
 
+
+  // handle submit functionality
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -67,19 +73,20 @@ const CreateListing = () => {
       // send axios api request to CreateListing endpoint in backend
       const response = await axios.post(
         "http://localhost:8080/api/listings",
+        // give backend the data from the form so it can create the listing
         formData,
         {
-          // use header Content-Type needed to use Cloudinary , Authorization & Bearer token are for user authentication
+          // use header Content-Type needed to use Cloudinary api for imaages , Authorization & Bearer token are for user authentication
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log("Listing added:", response.data);
 
       // redirect to the listing page when submission is complete
       navigate(`/item/${response.data.id}`);
+
     } catch (error) {
       console.error("Error adding listing:", error);
       alert("An error occurred while adding the listing. Please try again.");

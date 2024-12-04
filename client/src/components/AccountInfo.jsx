@@ -3,17 +3,25 @@ import { getUserInfo, updateUserInfo } from "../services/AuthService.js";
 import "../public/account.css";
 
 const AccountInfo = () => {
+
     // State variables
     const [user, setUser] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [updatedUser, setUpdatedUser] = useState({});
     const [error, setError] = useState(null);
 
+
+
     useEffect(() => {
+
+        //function to fetch user info from backend
         const fetchUserInfo = async () => {
             try {
+
+                // fetch user info using api call
                 const userInfo = await getUserInfo();
-                console.log("Fetched userInfo:", userInfo);
+
+                // store fetched user info in state
                 setUser(userInfo);
                 setUpdatedUser(userInfo);
             } catch (error) {
@@ -24,27 +32,47 @@ const AccountInfo = () => {
         fetchUserInfo();
     }, []);
 
+
+    // handles input change in the edit form
     const handleInputChange = (e) => {
+
+        // get the name and value
         const { name, value } = e.target;
+
+        // update state using an object
         setUpdatedUser((prevState) => ({
+
+            // get all the previous state values
             ...prevState,
+            // update specific field that is changed
             [name]: value,
         }));
     };
 
+
+    // handles click on edit button
     const handleEditClick = () => {
         setIsEditing(true);
     };
 
+
+    // handles click on cancel button and resets state
     const handleCancelClick = () => {
         setIsEditing(false);
         setUpdatedUser(user);
     };
 
+
+    // handles click for save button
     const handleSaveClick = async () => {
         try {
+
+            //call updateUserInfo in authservice.js and store in variable
             const updatedInfo = await updateUserInfo(updatedUser);
+
+            // update user state
             setUser(updatedInfo);
+            // exit edit mode
             setIsEditing(false);
             alert("Profile updated successfully!");
         } catch (error) {

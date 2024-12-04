@@ -4,11 +4,12 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import DisabledByDefaultIcon from "@mui/icons-material/DisabledByDefault";
 import Map from "../components/Map.jsx";
-import { useNavigate, useParams, Link } from "react-router-dom";
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "Axios";
 
 const Item = () => {
+
+  // state
   const { productId } = useParams();
   const [listing, setListing] = useState(null);
   const [count, setCount] = useState(0);
@@ -31,18 +32,20 @@ const Item = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch the listing data from the backend
+    // fetch the listing data from the backend
     const fetchListing = async () => {
       try {
+
         // get the JWT token from localStorage using "token" key
         const token = localStorage.getItem("token");
 
-        // get the user ID from localStorage (ensure it's stored during login)
+        // get the user ID from localStorage
         const currentUserId = localStorage.getItem("userId");
 
         // Call getListingById endpoint in backend
         const response = await axios.get(
           `http://localhost:8080/api/listings/${productId}`,
+            // include jwt authorization header so backend can authenitcate
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -51,7 +54,6 @@ const Item = () => {
         );
 
         // store data retrieved from backend into listingData variable
-        console.log("Listing data:", response.data);
         const listingData = response.data;
         setListing(listingData);
 
@@ -79,6 +81,8 @@ const Item = () => {
           latitude: listingData.latitude || "",
         });
 
+
+        // mark loading as complete
         setLoading(false);
       } catch (err) {
         console.error("Error fetching listing:", err.response || err);
@@ -87,24 +91,34 @@ const Item = () => {
       }
     };
 
+    // call function to refetch listing
     fetchListing();
+    // rerun the effect if productId state changes
   }, [productId]);
 
   const handleDeleteListing = async () => {
+
+    // confirm delete listing
     if (window.confirm("Are you sure you want to delete this listing?")) {
       try {
+
+
         // retrieve JWT token
         const token = localStorage.getItem("token");
 
-        // send API delete request to backend
+        // send API delete request to backend to delete specific listing
         await axios.delete(`http://localhost:8080/api/listings/${productId}`, {
+          // include jwt token for authentication
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
+        // alert deleting successful and go back to home page
         alert("Listing deleted successfully");
         navigate("/");
+
+
       } catch (err) {
         console.error("Error deleting listing:", err.response || err);
         alert("Failed to delete listing");
@@ -114,9 +128,18 @@ const Item = () => {
 
   // handles the logic for going to the next image on Item page
   const IncSlider = () => {
+
+
+    // if listing exists, listing images exist, and listing images have a length greater then 0
     if (listing && listing.imageUrls && listing.imageUrls.length > 0) {
+
+      // calculate next index , wraps to 0 if at the end
       const newCount = (count + 1) % listing.imageUrls.length;
+
+      // update count state
       setCount(newCount);
+
+      // update slide using array and state
       const newSlider = listing.imageUrls[newCount];
       setSlider(newSlider);
     }
@@ -124,32 +147,51 @@ const Item = () => {
 
   // handles logic for going to previous image on Item page
   const DecSlider = () => {
+
+    // if listing exists, listing images exist, and listing images have a length greater then 0
     if (listing && listing.imageUrls && listing.imageUrls.length > 0) {
+
+      // calculate prev index, wraps to 0 so it doesn't become negative
       const newCount =
         (count - 1 + listing.imageUrls.length) % listing.imageUrls.length;
+
+      // update count state
       setCount(newCount);
+      // update slider image using array
       setSlider(listing.imageUrls[newCount]);
     }
   };
 
-  // Handle input changes in the update form
+
+
+  // handle changes to the input fields in the update form
   const handleInputChange = (e) => {
+
+    // get the name and value from the field
     const { name, value } = e.target;
+
+    // update state
     setUpdatedListing((prevState) => ({
+      //copy prev state
       ...prevState,
+      // update field
       [name]: value,
     }));
   };
+
+
+
 
   // Handle form submission to update the listing
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
 
     try {
+
       // retrieve JWT token
       const token = localStorage.getItem("token");
 
-      // Prepare the updated listing data
+      // put new update listing data into object called payload
       const payload = {
         id: listing.id,
         title: updatedListing.title,
@@ -162,11 +204,15 @@ const Item = () => {
         userId: listing.userId,
       };
 
+
       // send PUT request in listingcontroller to update the listing
       const response = await axios.put(
+          // send api request to listings/listingid
         `http://localhost:8080/api/listings/${listing.id}`,
+          // give the api call the payload data to change the new fields
         payload,
         {
+          // also include the bearer jwt token and put it into json format so the user can be authenticated before updating listing
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -187,15 +233,23 @@ const Item = () => {
     }
   };
 
+
+
   // Handle the "Update Listing" button click
   const handleUpdateClick = () => {
+    // set state to true which then will open the update listing box
     setIsUpdating(true);
   };
 
+
+
   // Handle cancelling the update
   const handleCancelUpdate = () => {
+
+    // set state to false which will make the box go away
     setIsUpdating(false);
-    // Reset updatedListing to current listing data
+
+    // Reset updatedListing state to current listing data
     setUpdatedListing({
       title: listing.title || "",
       subject: listing.subject || "",
@@ -454,7 +508,6 @@ const Item = () => {
                 />
               </div>
 
-              {/* Add more fields as necessary */}
 
               <div className="form-actions">
                 <button type="submit" className="btn btn-primary">

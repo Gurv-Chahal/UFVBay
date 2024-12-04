@@ -6,25 +6,35 @@ import "../public/navbar.css";
 
 //Navbar component
 const Navbar = ({ onSearch, results }) => {
+
+  // state
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [showChatRoom, setShowChatRoom] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
+
+  // use effect is so that clicks outside dropdown menu will close it
   useEffect(() => {
+
+    // event handler for detecting clicks out the dropdown menu
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
       }
     };
 
+    // add event listen to the DOM
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
+      // remove event listen to the DOM
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
+
+  // function to handle serach form
   const handleSearch = (e) => {
     e.preventDefault();
     onSearch(searchQuery);
@@ -32,13 +42,17 @@ const Navbar = ({ onSearch, results }) => {
     console.log(searchQuery);
   };
 
+
+  // function to handle when user clicks on search result
   const handleResultClick = (item) => {
-    console.log("Selected Item: ", item);
     setShowDropdown(false);
     navigate(`/item/${item.id}`);
   };
 
+
+  // function to toggle visibility of chat box
   const toggleChatRoom = () => {
+    // toggle state
     setShowChatRoom(!showChatRoom);
   };
 

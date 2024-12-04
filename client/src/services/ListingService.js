@@ -15,8 +15,9 @@ axios.interceptors.request.use(
         // get the token
         const token = getToken();
 
+        // if token exists
         if (token) {
-            // set Authorization header to 'Bearer ' + token
+            // set Authorization header to 'Bearer ' + token so that the backend can authenticate the request
             config.headers["Authorization"] = 'Bearer ' + token;
 
         }

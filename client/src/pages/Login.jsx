@@ -11,6 +11,9 @@ import {
 } from "../services/AuthService.js";
 
 const Auth = () => {
+
+
+  // state
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigator = useNavigate();
@@ -44,6 +47,7 @@ const Auth = () => {
 
         // go back to home page
         navigator("/");
+
       })
       .catch((error) => {
         console.log("Login error:", error);

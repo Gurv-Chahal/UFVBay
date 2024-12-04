@@ -5,22 +5,29 @@ import Navbar from "../components/Navbar.jsx";
 import HomeSideBar from "../components/HomeSideBar.jsx";
 import ProductCards from "../components/ProductCards.jsx";
 import { getAllListings } from "../services/ListingService.js";
-import testData from "../public/testData.jsx";
 
 const Home = () => {
+
+
+  // state
   const [selectedSubject, setSelectedSubject] = useState("");
   const [listings, setListings] = useState([]);
   const [filteredItems, setFilteredItems] = useState("");
-  const [searchQuery, setsearchQuery] = useState("");
 
+
+  // function to handle changes in selected subject
   const handleSubjectChange = (subject) => {
     setSelectedSubject(subject === "ALL" ? "" : subject);
   };
 
+
   useEffect(() => {
+    // call function to fetch listings from backend
     fetchListings();
   }, []);
 
+
+  //handles search queries from user using title and description
   const handleSearch = (query) => {
     const lowerCaseQuery = query.toLowerCase();
     const results = listings.filter((item) => {
@@ -29,24 +36,35 @@ const Home = () => {
         item.description.toLowerCase().includes(lowerCaseQuery)
       );
     });
+    // update state with search results
     setFilteredItems(results);
   };
 
+
+  // function to fetch all listings from backend
   const fetchListings = () => {
+
     // calls getAllListings function which sends an api call to backend endpoint
     getAllListings()
       .then((response) => {
+
+        // combine response data into an array using spread operator
         const combinedListings = [...response.data];
+
+        // update state with listing data
         setListings(combinedListings);
-        console.log(combinedListings);
+
       })
       .catch((error) => {
         console.error("Error fetching listings:", error);
       });
   };
 
+  // filter listings based on subject
   const filteredData = selectedSubject
+      // if selectedSubject is true then filter by selectedSubject
     ? listings.filter((product) => product.subject === selectedSubject)
+      // if no subject is selected show all listings
     : listings;
 
   return (
