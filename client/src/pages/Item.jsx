@@ -308,6 +308,8 @@ const Item = () => {
           {/* Listing Title */}
           <h1 className="listtitle">{listing.title || "No Title"}</h1>
 
+          <strong>Subject:</strong> {listing.subject || "Unknown"}
+
           {/*Owner username*/}
           <p className="listowner">
             <strong>Posted By:</strong> {listing.username || "Unknown"}
