@@ -6,7 +6,9 @@ UFVBay is a web-application developed for UFV students to conduct in person meet
 
 ## Visuals
 
+![UFVBay's signup page](https://res.cloudinary.com/dl3lcg7x5/image/upload/v1733273627/signupreadme_jtwi0f.jpg)
 
+![UFVBay's item page](https://res.cloudinary.com/dl3lcg7x5/image/upload/v1733274070/itempage_tmaufq.png)
 
 
 ## Core Features
