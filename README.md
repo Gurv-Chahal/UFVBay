@@ -23,5 +23,3 @@ UFVBay is a web-application developed for UFV students to conduct in person meet
 ## Authors and acknowledgment
 - Gurveer Chahal
 - Wilson Agyapong
-- Megan Capewell
-
